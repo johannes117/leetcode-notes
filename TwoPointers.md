@@ -200,3 +200,67 @@ Related Problems
 - Two Sum
 - 4Sum
 - 3Sum Closest
+
+## 11. Container With Most Water
+
+### Problem Description
+Given an array of heights representing bars, find two bars that together with the x-axis forms a container that can hold the maximum amount of water.
+
+### Solution
+```python
+class Solution:
+    def maxArea(self, heights: List[int]) -> int:
+        maxArea = 0
+        l = 0
+        r = len(heights) - 1
+
+        while l < r:
+            # Calculate area using width × height
+            conLen = r - l
+            conHeight = min(heights[l], heights[r])
+            area = conLen * conHeight
+            
+            maxArea = max(area, maxArea)
+            
+            # Move pointer of smaller height inward
+            if heights[l] < heights[r]:
+                l += 1
+            else:
+                r -= 1
+
+        return maxArea
+```
+
+### Key Concepts
+
+Two Pointer Technique
+- Uses two pointers starting from opposite ends
+- Area is calculated using width (distance between pointers) × height (minimum of two bar heights)
+- Move the pointer with smaller height inward to potentially find larger area
+
+Efficient Search Strategy
+- No need to check all combinations (would be O(n²))
+- Moving the pointer with larger height would only decrease the area since:
+  1. Width would decrease
+  2. Height would be limited by the smaller bar anyway
+
+Time and Space Complexity
+- Time Complexity: O(n), where n is the length of the array
+- Space Complexity: O(1), using only two pointers
+
+Common Pitfalls to Avoid
+- Not moving pointers correctly after area calculation
+- Using incorrect area calculation formula
+- Not considering that container height is limited by shorter bar
+
+Example Walkthrough
+Input: height = [1,7,2,5,4,7,3,6]
+- Start with pointers at both ends
+- Calculate area as (right - left) × min(height[left], height[right])
+- Move pointer with smaller height inward
+- Keep track of maximum area seen so far
+
+Related Problems
+- Trapping Rain Water
+- Two Sum
+- 3Sum
