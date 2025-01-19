@@ -264,3 +264,70 @@ Related Problems
 - Trapping Rain Water
 - Two Sum
 - 3Sum
+
+
+## 42. Trapping Rain Water
+
+### Problem Description
+Given `n` non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+
+### Solution
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        if not height: return 0
+
+        maxL = height[0]
+        maxR = height[len(height) - 1]
+
+        l, r = 0, len(height) - 1
+
+        totalArea = 0
+        while l < r:
+            if maxL < maxR:
+                l += 1
+                maxL = max(maxL, height[l])
+                totalArea += maxL - height[l]
+            else:
+                r -= 1
+                maxR = max(maxR, height[r])
+                totalArea += maxR - height[r]
+        
+        return totalArea
+```
+
+### Key Concepts
+
+Two Pointer Technique
+- Uses two pointers starting from opposite ends
+- Maintains maximum height seen from left and right sides
+- Water trapped at each position is determined by the smaller of maxL and maxR
+
+Efficient Water Calculation
+- For each position, water trapped = min(maxL, maxR) - height[current]
+- Move pointer on the side with smaller max height
+- Update max height after moving pointer
+- Add trapped water for current position
+
+Time and Space Complexity
+- Time Complexity: O(n), where n is the length of the array
+- Space Complexity: O(1), using only constant extra space
+
+Common Pitfalls to Avoid
+- Not handling empty input array
+- Incorrect pointer movement logic
+- Not updating max heights at the right time
+- Not considering that water level is determined by smaller of the two max heights
+
+Example Walkthrough
+Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+- Start with pointers at ends
+- Track maximum heights from both sides
+- Move pointer from side with smaller max height
+- Add trapped water at each step
+- Output: 6 units of water
+
+Related Problems
+- Container With Most Water
+- Two Sum
+- Product of Array Except Self
