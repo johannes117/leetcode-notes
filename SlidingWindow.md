@@ -79,3 +79,47 @@ class Solution:
 - The right pointer is incremented to move to the next character
 
 This is a sliding window problem because we are using two pointers to iterate through the string.
+
+## Permutation in String
+
+You are given two strings s1 and s2.
+
+Return true if s2 contains a permutation of s1, or false otherwise. That means if a permutation of s1 exists as a substring of s2, then return true.
+
+Both strings only contain lowercase letters.
+
+### Solution
+```python
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2): return False
+
+        # Initialise Frequency Arrays
+        s1_freq = [0] * 26
+        s2_freq = [0] * 26
+
+        # Populate Frequency arrays
+        for i in range(len(s1)):
+            s1_freq[ord(s1[i]) - ord('a')] += 1 # Fully calculates freq array of s1
+            s2_freq[ord(s2[i]) - ord('a')] += 1 # Calcs freq array of s2 in the first window of len(s1)
+
+        if s1_freq == s2_freq:
+            return True
+
+        for i in range(len(s1), len(s2)):
+            # Slide the Window
+            s2_freq[ord(s2[i]) - ord('a')] += 1 # Adds a character
+            s2_freq[ord(s2[i-(len(s1))]) - ord('a')] -= 1 # Removes far left character
+
+            if s1_freq == s2_freq:
+                return True
+        
+        return False
+```
+
+### Key Concepts
+- Frequency arrays are used to store the frequency of each character in the strings
+- The frequency arrays are compared to check if a permutation of s1 exists as a substring of s2
+- The frequency arrays are updated by sliding the window
+- The window is slid by adding the current character and removing the far left character
+- The frequency arrays are compared to check if a permutation of s1 exists as a substring of s2
