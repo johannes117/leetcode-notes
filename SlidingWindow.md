@@ -123,3 +123,81 @@ class Solution:
 - The frequency arrays are updated by sliding the window
 - The window is slid by adding the current character and removing the far left character
 - The frequency arrays are compared to check if a permutation of s1 exists as a substring of s2
+
+# Sliding Window Maximum
+You are given an array of integers nums and an integer k. There is a sliding window of size k that starts at the left edge of the array. The window slides one position to the right until it reaches the right edge of the array.
+
+Return a list that contains the maximum element in the window at each step.
+
+## Key Data Structure
+A deque (double-ended queue) in Python is a specialized container type from the collections module that allows efficient append and pop operations from both ends of the sequence. It's essentially a hybrid between a stack and a queue.
+```python
+from collections import deque
+
+# Create a deque
+d = deque([1, 2, 3, 4])
+
+# Add or remove from right end
+d.append(5)        # Add to right end: [1, 2, 3, 4, 5]
+d.pop()            # Remove from right end: [0, 1, 2, 3, 4]
+
+# Add or remove from left end
+d.popleft()        # Remove from left end: [1, 2, 3, 4]
+d.appendleft(0)    # Add to left end: [0, 1, 2, 3, 4, 5]
+```
+Key advantages of deques:
+
+- O(1) time complexity for append and pop operations at both ends
+- Thread-safe and memory efficient
+- Support for a maximum length that automatically discards items when the deque gets too long
+- Ability to rotate elements (move elements from one end to another)
+
+Deques are particularly useful for:
+
+- Implementing breadth-first search algorithms
+- Maintaining a fixed-size window of recent items
+- Managing task queues where items need to be added or removed from either end
+
+## Solution
+```python
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        # output arr
+        output = []
+        # queue
+        q = deque()
+        # l and r pointers
+        l = r = 0
+        
+        # while right pointer is less than the max range of list
+        while r < len(nums):
+            # while q exists and the back element in the queue is less than nums[r]
+            while q and nums[q[-1]] < nums[r]:
+                # pop from queue
+                q.pop() # Removes from the right end of the queue (front of the queue)
+            # append index at the right pointer to queue
+            q.append(r)
+            # if left pointer is greater than the front element in the queue
+            if l > q[0]:
+                # pop left, this removes q[0] from the queue as the left pointer has moved past it
+                q.popleft()
+            
+            # if right pointer + 1 is greater than or equal to k (size of window)
+            if (r + 1) >= k:
+                # append number at the front of the queue to the output array. This is the maximum element in the current window.
+                output.append(nums[q[0]])
+                # increment left pointer
+                l += 1
+            # increment right pointer 
+            r += 1
+        
+        return output
+```
+
+## Key Concepts
+- A deque is used to store the indices of the elements in the current window
+- The deque is used to maintain the maximum element in the current window
+- The deque is used to maintain the order of the elements in the current window
+- We use a left and a right pointer to iterate through the array
+- When the right pointer + 1 is greater than or equal to k (size of window), we append the number at the front of the queue to the output array and increment the left pointer. This shifts the window to the right.
+- This is easy to do since we are storing the indices of the elements in the current window in the deque.
