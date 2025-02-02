@@ -92,3 +92,60 @@ class Solution:
 - A hashSet is used to store the operators
 - The stack is popped if the top of the stack is an operator
 - The stack is returned the last value in the stack
+
+
+## Generate Parentheses
+
+You are given an integer n. Return all well-formed parentheses strings that you can generate with n pairs of parentheses.
+
+Example 1:
+
+Input: n = 1
+
+Output: ["()"]
+Example 2:
+
+Input: n = 3
+
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+You may return the answer in any order.
+
+```python
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        stack = []
+        res = []
+
+        def backtrack(openN, closedN):
+            # Basecase: if openN and closedN equal n, then append stack to result. res.append("".join(stack))
+            if openN == closedN == n:
+                res.append("".join(stack))
+                return
+
+            # if openN < n: This will recursively traverse down the left decision tree first
+            if openN < n:
+                # append a open parenthesis to the stack
+                stack.append("(")
+                # recursively call backtracking function (once it hits the basecase (openN == closedN == n)it will return to this point)
+                backtrack(openN + 1, closedN) # we increment the openN value by 1 so that we calculate the next level down in the left tree
+                # pop from the stack (This essentially the undo step of the backtracking algo)
+                stack.pop()
+            # same thing but for the right decision tree. 
+            if closedN < openN: # We ensure that we only add a close parenthesis if there are more open parentheses than close parentheses
+                stack.append(")")
+                backtrack(openN, closedN + 1) # increment closedN value by 1 to traverse down the right of the decision tree.
+                stack.pop()
+
+        backtrack(0, 0) # pass in 0 index for closed and open 
+        return res
+```
+
+### Key Concepts
+- A stack is used to store the parentheses
+- A list is used to store the result
+- we use backtracking to generate all the possible combinations of parentheses
+- backtracking is useful when we need to generate all possible combinations of a set of values
+
+## Key Algorithm
+- Backtracking: A general algorithm for finding all (or some) solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.
+- Make a decision, explore it, and then undo the decision.
