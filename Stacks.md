@@ -149,3 +149,41 @@ class Solution:
 ## Key Algorithm
 - Backtracking: A general algorithm for finding all (or some) solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.
 - Make a decision, explore it, and then undo the decision.
+
+## Daily Temperatures
+You are given an array of integers temperatures where temperatures[i] represents the daily temperatures on the ith day.
+
+Return an array result where result[i] is the number of days after the ith day before a warmer temperature appears on a future day. If there is no day in the future where a warmer temperature will appear for the ith day, set result[i] to 0 instead.
+
+```python
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        # initialise res list with all 0's with the length of temperatures list
+        res = [0] * len(temperatures)
+        # initialise stack pair: [temp, index]
+        stack = []
+
+        # enumerate through temperatures and get the index and value/temp in temp list
+        for i, t in enumerate(temperatures):
+            # while stack exists and temperature value is greater than the temp value at the top of the stack:
+            while stack and t > stack[-1][0]: # stack[-1][0] is the temperature at the top of the stack in python
+                # pop from stack and unpack index and value
+                poppedTemp, poppedIndex = stack.pop()
+                # insert the distance from current index and popped index into result list at the popped index
+                res[poppedIndex] = (i - poppedIndex)
+            # append current temp and index to stack
+            stack.append([t, i])
+        # return result list
+        return res
+```
+
+### Key Concepts
+- A Monotonic decreasing stack is used to store the temperatures and their corresponding index pairs
+- The stack is popped if the temperature at the top of the stack is less than the current temperature
+- The result list is updated with the distance between the current index and the index at the top of the stack
+- The stack is returned with the result list
+
+### Monotonic Stack
+- A monotonic stack is a stack where the elements are in a sorted order
+- A monotonic decreasing stack is a stack where the elements are in a decreasing order
+- A monotonic increasing stack is a stack where the elements are in an increasing order
