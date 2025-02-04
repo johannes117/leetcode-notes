@@ -187,3 +187,67 @@ class Solution:
 - A monotonic stack is a stack where the elements are in a sorted order
 - A monotonic decreasing stack is a stack where the elements are in a decreasing order
 - A monotonic increasing stack is a stack where the elements are in an increasing order
+
+## Car Fleet
+There are n cars traveling to the same destination on a one-lane highway.
+
+You are given two arrays of integers position and speed, both of length n.
+
+position[i] is the position of the ith car (in miles)
+speed[i] is the speed of the ith car (in miles per hour)
+The destination is at position target miles.
+
+A car can not pass another car ahead of it. It can only catch up to another car and then drive at the same speed as the car ahead of it.
+
+A car fleet is a non-empty set of cars driving at the same position and same speed. A single car is also considered a car fleet.
+
+If a car catches up to a car fleet the moment the fleet reaches the destination, then the car is considered to be part of the fleet.
+
+Return the number of different car fleets that will arrive at the destination.
+
+```python
+class Solution:
+    def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
+        # convert position and speed lists into a pair list using zip function
+        pair = [(p, s) for p, s in zip(position, speed)]
+        # sort pair list in reverse
+        pair.sort(reverse=True)
+        # initialise stack
+        stack = []
+
+        # for position and speed in reversed pair list
+        for p, s in pair:
+            # append the time of arrival to the stack: (target - position) / speed
+            stack.append((target - p) / s)
+            # if length of stack is greater than or equal to 2 and top of stack is less than or equal to the 2nd from the top of stack
+            # We check stack >= 2 otherwise stack[-2] will give us an index error if there is only 1 value in the stack
+            # when the current car arrival time: stack[-1] is less than or equal to stack[-2] (car in front), 
+            # That means the current car will intercept the car in front forming a fleet.
+            if len(stack) >= 2 and stack[-1] <= stack[-2]:
+                # pop from stack
+                stack.pop()
+        # return length of stack. 
+        return len(stack)
+```
+
+### Key Concepts
+- A stack is used to store the time of arrival of each car
+- The stack is popped if the time of arrival of the current car is less than or equal to the time of arrival of the car in front
+- The stack is returned with the number of different car fleets that will arrive at the destination
+- A fleet can be tracked using the time of arrival of the car at the front of the fleet. Therefore we can pop cars that are part of the fleet from the stack.
+
+### Key Techniques
+- Zipping two lists together: 
+```python
+pair = [(p, s) for p, s in zip(position, speed)]
+```
+- Sorting a list in reverse order:
+```python
+pair.sort(reverse=True)
+```
+
+### Time Complexity
+- O(n log n) for sorting the pair list
+- O(n) for iterating through the pair list
+- O(1) for popping from the stack
+- Therefore, the time complexity is O(n log n)
