@@ -251,3 +251,72 @@ pair.sort(reverse=True)
 - O(n) for iterating through the pair list
 - O(1) for popping from the stack
 - Therefore, the time complexity is O(n log n)
+
+
+## Largest Rectangle in Histogram
+You are given an array of integers heights where heights[i] represents the height of a bar. The width of each bar is 1.
+
+Return the area of the largest rectangle that can be formed among the bars.
+
+Note: This chart is known as a histogram.
+
+```python
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        # Initialise global variables, length of heights, stack, max area.
+        # Stack will be in tuple format: height, index
+        n = len(heights)
+        stack = []
+        max_area = 0
+
+        # enumerate through heights list
+        for i, height in enumerate(heights):
+            # initialise a start variable as the current index i
+            start = i
+            # while the stack exists, and height is less than the height of the top of the stack (stack[-1][0])
+            while stack and height < stack[-1][0]:
+                # pop from stack, unpack height and index j
+                h, j = stack.pop()
+                # calculate width as i - j. (j is the index of the popped value, i is the current index, this should give us the distance from the popped candidate)
+                w = i - j
+                # calculate area using h (height) of popped candidate and the new calculated width
+                a = h*w
+                # set the max_area variable to the max of current max_area and the new calculated area. 
+                max_area = max(max_area, a)
+                # assign start variable to index j. 
+                start = j # We do this because we want the start of the current candidate to be the index of the popped candidate.
+            # append height, start index to stack
+            stack.append([height, start])
+        
+        # while stack exists:
+        while stack:
+            # pop from stack
+            h, j = stack.pop()
+            # calculate width as n - j
+            w = n - j
+            a = w*h
+            # set max_area
+            max_area = max(max_area, a)
+
+        # return max area
+        return max_area
+
+    # Time: O(n)
+    # Space: O(n)
+```
+
+### Key Concepts
+- A stack is used to store the heights and their corresponding index (in a tuple format)
+- The stack is popped if the height of the current bar is less than the height of the bar at the top of the stack
+- The max area is calculated using the height of the popped bar and the width of the current bar
+- The max area is updated if the new calculated area is greater than the current max area
+- The stack is returned with the max area
+
+### Time Complexity
+- O(n) for iterating through the heights list
+- O(n) for popping from the stack
+- Therefore, the time complexity is O(n)
+
+### Space Complexity
+- O(n) for storing the stack
+- Therefore, the space complexity is O(n)
