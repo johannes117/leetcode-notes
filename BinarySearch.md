@@ -85,3 +85,60 @@ class Solution:
 ### Space Complexity
 - O(1) space
 - We are not using any extra space to store the result. Two pointers are used to store the search interval.
+
+## Koko Eating Bananas
+You are given an integer array piles where piles[i] is the number of bananas in the ith pile. You are also given an integer h, which represents the number of hours you have to eat all the bananas.
+
+You may decide your bananas-per-hour eating rate of k. Each hour, you may choose a pile of bananas and eats k bananas from that pile. If the pile has less than k bananas, you may finish eating the pile but you can not eat from another pile in the same hour.
+
+Return the minimum integer k such that you can eat all the bananas within h hours.
+
+### Key Concepts
+- We can utilise binary search to improve the time complexity of the solution.
+- Use two pointers, `l` and `r`, to represent the search interval.
+- r pointer can be calculated by taking the max value in the piles array. max(piles)
+- we can set l pointer to 1 because koko can eat at least 1 banana per hour.
+- we can set r pointer to the max value in the piles array because koko can eat at most the max value in the piles array bananas per hour.
+- we can calculate the middle value of the search interval using the formula `mid = (l + r) // 2`.
+- we can calculate the total time taken to eat all the bananas using the formula `total_time = sum(math.ceil(piles[i] / mid) for i in range(len(piles)))`.
+- we can compare the total time taken to eat all the bananas with the given hours `h` to determine if the current middle value is too fast or too slow.
+- if the total time taken is greater than `h`, we can move the left pointer to `mid + 1` to search for a faster eating rate.
+- if the total time taken is less than or equal to `h`, we can move the right pointer to `mid - 1` to search for a slower eating rate.
+- we can repeat this process until the left pointer is greater than the right pointer.
+- the minimum integer k such that you can eat all the bananas within h hours is the left pointer.
+
+```python
+    class Solution:
+        def minEatingSpeed(self, piles: List[int], h: int) -> int:
+            # Define left and right pointers
+            l, r = 1, max(piles) # right pointer is the maximum value in the input array
+            res = 0
+
+            while l <= r:
+                # calculate middle value
+                mid = (l + r) // 2
+                totalTime = 0
+                # use mid value to calculate amount of hours it will take to eat all of the bananas
+                for pile in piles:
+                    # Converts pile to float, divides by eating speed, rounds up to nearest hour since partial hours invalid
+                    totalTime += math.ceil(float(pile) / mid)              
+                if totalTime <= h:
+                    # That means we found a valid candidate, and we need to check values to the left of the mid pointer
+                    res = mid
+                    r = mid - 1
+                else:
+                    # we did not find a valid candidate, we need to increase the amount of bananas per hour (check right of mid)
+                    l = mid + 1
+            
+            return res
+```
+
+### Time Complexity
+- O(n log m) time
+- We are performing binary search on the search interval which takes O(log m) time.
+- We are also iterating through the piles array which takes O(n) time.
+- Therefore, the time complexity is O(n log m) time.
+
+### Space Complexity
+- O(1) space
+- We are not using any extra space to store the result. Two pointers are used to store the search interval.
