@@ -142,3 +142,49 @@ Return the minimum integer k such that you can eat all the bananas within h hour
 ### Space Complexity
 - O(1) space
 - We are not using any extra space to store the result. Two pointers are used to store the search interval.
+
+## Find Minimum in Rotated Sorted Array
+You are given an array of length n which was originally sorted in ascending order. It has now been rotated between 1 and n times. For example, the array nums = [1,2,3,4,5,6] might become:
+
+[3,4,5,6,1,2] if it was rotated 4 times.
+[1,2,3,4,5,6] if it was rotated 6 times.
+Notice that rotating the array 4 times moves the last four elements of the array to the beginning. Rotating the array 6 times produces the original array.
+
+Assuming all elements in the rotated sorted array nums are unique, return the minimum element of this array.
+
+A solution that runs in O(n) time is trivial, can you write an algorithm that runs in O(log n) time?
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        # if value at middle pointer is greater or equal to value at left pointer search Right
+        # else search left. 
+        l, r = 0, len(nums) - 1
+        res = nums[0]
+
+        while l <= r:
+            if nums[l] < nums[r]:
+                res = min(nums[l], res)
+                break
+            mid = (l + r) // 2
+            res = min(res, nums[mid])
+            if nums[mid] >= nums[l]:
+                # we want to search right
+                l = mid + 1
+            else:
+                # we want to search left
+                r = mid - 1
+        
+        return res
+```
+
+### Key Concepts
+- We can utilise binary search to improve the time complexity of the solution.
+- We can use two pointers, `l` and `r`, to represent the search interval.
+- We can calculate the middle index of the search interval using the formula `mid = (l + r) // 2`.
+- We can compare the value at the middle index with the value at the left pointer to determine if the minimum value is to the left or right of the middle index.
+- If the value at the middle index is greater than or equal to the value at the left pointer, we can move the left pointer to `mid + 1` to search for the minimum value to the right of the middle index.
+- If the value at the middle index is less than the value at the left pointer, we can move the right pointer to `mid - 1` to search for the minimum value to the left of the middle index.
+- We can repeat this process until the left pointer is greater than the right pointer.
+- The minimum value in the rotated sorted array is the value at the left pointer.
+- There is a special case where the array is not rotated, in this case, we can return the first element of the array.
