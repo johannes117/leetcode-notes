@@ -188,3 +188,73 @@ class Solution:
 - We can repeat this process until the left pointer is greater than the right pointer.
 - The minimum value in the rotated sorted array is the value at the left pointer.
 - There is a special case where the array is not rotated, in this case, we can return the first element of the array.
+
+
+# Search in Rotated Sorted Array
+You are given an array of length n which was originally sorted in ascending order. It has now been rotated between 1 and n times. For example, the array nums = [1,2,3,4,5,6] might become:
+
+[3,4,5,6,1,2] if it was rotated 4 times.
+[1,2,3,4,5,6] if it was rotated 6 times.
+Given the rotated sorted array nums and an integer target, return the index of target within nums, or -1 if it is not present.
+
+You may assume all elements in the sorted rotated array nums are unique,
+
+A solution that runs in O(n) time is trivial, can you write an algorithm that runs in O(log n) time?
+
+```python
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        # Use binary search to find pivot
+        # once you've found the pivot, do a binary search on either the left sorted portion or right sorted portion. 
+        # Handle condition where l < r (array is not rotated)
+
+        # Finding the pivot
+        l, r = 0, len(nums) - 1
+
+        while l < r:
+            # find m
+            m = (l + r) // 2
+            # if m greater than nums[r] increment left pointer
+            if nums[m] > nums[r]: # the middle pointer being larger than right pointer suggest the pivot is to the right. 
+                l = m + 1
+            # else increment right pointer
+            else:
+                r = m
+
+        # left pointer will be at the pivot, save pivot
+        pivot = l
+
+        # 3 conditions to set the new pointers
+        # pivot index is 0, simply perform binary search on the entire array
+        if nums[pivot] == nums[0]:
+            l, r = 0, len(nums) - 1
+        # target is to the left of the pivot
+        elif target >= nums[0]:
+            l, r = 0, pivot - 1
+        # target is to the right of the pivot
+        else:
+            l, r = pivot, len(nums) - 1
+
+        # perform a traditional binary search using the new pointers
+        while l <= r:
+            m = (l + r) // 2
+            if nums[m] == target:
+                return m
+            if target < nums[m]:
+                r = m - 1
+            else:
+                l = m + 1
+
+        # return value
+        return -1
+```
+
+### Key Concepts
+- We need to perform 2 binary searches. One to find the pivot and one to find the target.
+- You can find the pivot by converging the left and right pointers until they are equal.
+- Once you've found the pivot, you can perform a binary search on either the left sorted portion or right sorted portion.
+- There are 3 conditions to set the new pointers:
+    - pivot index is 0, simply perform binary search on the entire array
+    - target is to the left of the pivot
+    - target is to the right of the pivot
+- Perform a traditional binary search using the new pointers.
