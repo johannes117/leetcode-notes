@@ -103,3 +103,43 @@ class Solution:
 - if a list.value is lower, we link the current note to the smaller values list, and move the pointer to the newly added node. 
 - We then advance the list to its next node. 
 - Once we are finished with the while loop, we append whichever list still has values to the end of our merged list, and return dummy.next. 
+
+## Linked List Cycle Detection
+Given the beginning of a linked list head, return true if there is a cycle in the linked list. Otherwise, return false.
+
+There is a cycle in a linked list if at least one node in the list can be visited again by following the next pointer.
+
+Internally, index determines the index of the beginning of the cycle, if it exists. The tail node of the list will set it's next pointer to the index-th node. If index = -1, then the tail node points to null and no cycle exists.
+
+Note: index is not given to you as a parameter.
+
+### Key Concepts
+- Use Two Pointers: Slow and Fast
+- Slow pointer moves one step at a time
+- Fast pointer moves two steps at a time
+- If there is a cycle, the slow and fast pointers will eventually meet
+- If there is no cycle, the fast pointer will reach the end of the list
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        # Create a dummy node to handle edge cases
+        d = ListNode()
+        d.next = head
+        # Set both slow and fast pointers to the dummy node
+        s = f = d
+
+        while f and f.next:
+            f = f.next.next
+            s = s.next
+
+            if s is f:
+                return True
+        
+        return False
