@@ -113,13 +113,6 @@ Internally, index determines the index of the beginning of the cycle, if it exis
 
 Note: index is not given to you as a parameter.
 
-### Key Concepts
-- Use Two Pointers: Slow and Fast
-- Slow pointer moves one step at a time
-- Fast pointer moves two steps at a time
-- If there is a cycle, the slow and fast pointers will eventually meet
-- If there is no cycle, the fast pointer will reach the end of the list
-
 ```python
 # Definition for singly-linked list.
 # class ListNode:
@@ -143,3 +136,11 @@ class Solution:
                 return True
         
         return False
+```
+
+### Key Concepts
+- We create a dummy node to handle edge cases.
+- We set both slow and fast pointers to the dummy node.
+- We use a while loop to move the fast pointer two steps at a time and the slow pointer one step at a time.
+- If the slow and fast pointers meet, we return True.
+- If the fast pointer reaches the end of the list, we return False.
