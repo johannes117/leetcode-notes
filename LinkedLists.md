@@ -144,3 +144,87 @@ class Solution:
 - We use a while loop to move the fast pointer two steps at a time and the slow pointer one step at a time.
 - If the slow and fast pointers meet, we return True.
 - If the fast pointer reaches the end of the list, we return False.
+
+## Reorder Linked List
+You are given the head of a singly linked-list.
+
+The positions of a linked list of length = 7 for example, can intially be represented as:
+
+[0, 1, 2, 3, 4, 5, 6]
+
+Reorder the nodes of the linked list to be in the following order:
+
+[0, 6, 1, 5, 2, 4, 3]
+
+Notice that in the general case for a list of length = n the nodes are reordered to be in the following order:
+
+[0, n-1, 1, n-2, 2, n-3, ...]
+
+You may not modify the values in the list's nodes, but instead you must reorder the nodes themselves.
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        # Find Middle 
+        slow, fast = head, head.next
+        # while loop until fast pointer hits the last node or none (while fast and fast.next)
+        while fast and fast.next:
+            # set the slow pointer to slow next
+            slow = slow.next
+            # set the fast pointer to fast next next
+            fast = fast.next.next
+
+        # second half list starts at the new slow.next value
+        second = slow.next
+        # prev = slow.next = None # This breaks the link of the two lists, and adds a None value to the end of the first list
+        prev = slow.next = None
+
+        # Reverse Second Half
+        # while second half of list exists
+        while second:
+            # use temp value to store second next
+            temp = second.next
+            # second next = prev # This reverses the link
+            second.next = prev
+            # set prev to second
+            prev = second
+            # set second to temp
+            second = temp
+
+        # first list is at head
+        first = head
+        # second list is at prev
+        second = prev
+
+        # Merge two lists
+        # while second
+        while second:
+            # create a temp variable for first and second nexts
+            temp1, temp2 = first.next, second.next
+            # set first next to second and second next to temp 1
+            first.next = second
+            second.next = temp1 # (This sets the value to what first.next was before we broke the link)
+            # set first and second to the respective temp values
+            first, second = temp1, temp2
+```
+
+### Key Concepts
+- We find the middle of the list using the slow and fast pointers.
+- We split the list into two halves.
+- We reverse the second half of the list.
+- We merge the two lists.
+- We return the merged list.
+
+Using slow and fast pointers to find the middle of a list:
+Since the fast pointer moves twice as fast as the slow pointer, when the fast pointer reaches the end of the list, the slow pointer will be at the middle of the list.
+We can use this as a split point to split the list into two halves.
+We want to break the link of the second half of the list, so we set prev = slow.next = None. This breaks the link of the two lists, and adds a None value to the end of the first list.
+Then we need to reverse the second half of the list. We do this by setting the second.next = prev, and then setting prev = second, and second = temp. This reverses the link of the second half of the list.
+We then merge the two lists by setting first.next = second, and second.next = temp1. This sets the value to what first.next was before we broke the link.
+We then set first and second to the respective temp values.
+Head will then be the new head of the merged list.
