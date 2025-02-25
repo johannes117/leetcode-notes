@@ -228,3 +228,51 @@ Then we need to reverse the second half of the list. We do this by setting the s
 We then merge the two lists by setting first.next = second, and second.next = temp1. This sets the value to what first.next was before we broke the link.
 We then set first and second to the respective temp values.
 Head will then be the new head of the merged list.
+
+## Remove Node From End of Linked List
+You are given the beginning of a linked list head, and an integer n.
+
+Remove the nth node from the end of the list and return the beginning of the list.
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        # initialise dummy node
+        dummy = ListNode()
+        dummy.next = head
+        # initialise behind and head pointers to dummy
+        ahead = behind = dummy
+
+        # this loop places the ahead pointer at n+1 from the head of the list. This is useful so we can place the behind pointer later
+        for _ in range(n+1):
+            # set ahead pointer to ahead.next
+            ahead = ahead.next
+        
+        # we move the ahead and behind pointers together until the ahead pointer reaches the end of the list.
+        # since the ahead pointer is exactly n+1 jumps away from the behind pointer: the behind pointer will be at the n - 1 node.
+        while ahead:
+            # set behind to behind.next
+            behind = behind.next
+            # set ahead to ahead.next
+            ahead = ahead.next
+
+        # this code simply breaks the link for the target node and "skips" it. 
+        behind.next = behind.next.next
+
+        # this will return the new head of the list. 
+        return dummy.next
+```
+
+### Key Concepts
+- We create a dummy node to handle edge cases.
+- We set the behind and ahead pointers to the dummy node.
+- We use a for loop to place the ahead pointer at n+1 from the head of the list. This is useful so we can place the behind pointer later.
+- We use a while loop to move the ahead and behind pointers together until the ahead pointer reaches the end of the list. Since the ahead pointer is exactly n+1 jumps away from the behind pointer: the behind pointer will be at the n - 1 node.
+- We then break the link for the target node which "skips" it.
+- We return the new head of the list.
