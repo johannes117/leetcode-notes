@@ -276,3 +276,58 @@ class Solution:
 - We use a while loop to move the ahead and behind pointers together until the ahead pointer reaches the end of the list. Since the ahead pointer is exactly n+1 jumps away from the behind pointer: the behind pointer will be at the n - 1 node.
 - We then break the link for the target node which "skips" it.
 - We return the new head of the list.
+
+## Copy Linked List with Random Pointer
+You are given the head of a linked list of length n. Unlike a singly linked list, each node contains an additional pointer random, which may point to any node in the list, or null.
+
+Create a deep copy of the list.
+
+The deep copy should consist of exactly n new nodes, each including:
+
+The original value val of the copied node
+A next pointer to the new node corresponding to the next pointer of the original node
+A random pointer to the new node corresponding to the random pointer of the original node
+Note: None of the pointers in the new list should point to nodes in the original list.
+
+Return the head of the copied linked list.
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+"""
+
+class Solution:
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        if not head: return None
+        # use a dictionary to store old to new values
+        old_to_new = {}
+        curr = head
+
+        # First loop to create the old_to_new hashmap
+        while curr:
+            node = Node(x=curr.val) # create a new node with the value of the current node
+            old_to_new[curr] = node # store the new node in the hashmap
+            curr = curr.next # move to the next node
+        
+        curr = head
+        # second while loop
+        while curr:
+            new_node = old_to_new[curr] # get the new node from the hashmap
+            new_node.next = old_to_new[curr.next] if curr.next else None # set the next pointer of the new node to the next pointer of the current node
+            new_node.random = old_to_new[curr.random] if curr.random else None # set the random pointer of the new node to the random pointer of the current node
+            curr = curr.next # move to the next node
+
+        return old_to_new[head]
+```
+
+### Key Concepts
+- We use a dictionary to store old to new values.
+- We first loop through the list to create the old_to_new hashmap.
+- We then loop through the list again to create the new nodes and set the next and random pointers.
+- We return the new head of the list.
+
