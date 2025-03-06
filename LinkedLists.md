@@ -331,3 +331,38 @@ class Solution:
 - We then loop through the list again to create the new nodes and set the next and random pointers.
 - We return the new head of the list.
 
+## Find Duplicate Integer in Linked List
+
+Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+
+There is only one repeated number in nums, return this repeated number.
+
+You must solve the problem without modifying the array nums and uses only constant extra space.
+
+```python
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+        slow, fast = nums[0], nums[0]
+
+        # First phase: find the intersection point
+        while True:
+            slow = nums[slow] # Move slow pointer one step
+            fast = nums[nums[fast]] # Move fast pointer two steps
+            if slow == fast: # If the two pointers meet, we have found the intersection point
+                break
+        
+        slow2 = nums[0]
+        while slow != slow2:
+            slow = nums[slow] # Move slow pointer one step
+            slow2 = nums[slow2] # Move slow2 pointer one step
+        return slow
+```
+
+### Key Concepts
+- We use the slow and fast pointers to find the duplicate number.
+- We need to use Floyd's Tortoise and Hare (Cycle Detection) algorithm to find the duplicate number.
+- We need to find the intersection of the two pointers.
+- We then need to find the entrance to the cycle.
+- Use a second slow pointer to find the entrance to the cycle.
+- When the two slow pointers meet, we have found the duplicate number.
+- We return the duplicate number.
