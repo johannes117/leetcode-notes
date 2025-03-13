@@ -366,3 +366,62 @@ class Solution:
 - Use a second slow pointer to find the entrance to the cycle.
 - When the two slow pointers meet, we have found the duplicate number.
 - We return the duplicate number.
+
+## Merge K Sorted Linked Lists
+You are given an array of k linked lists lists, where each list is sorted in ascending order.
+
+Return the sorted linked list that is the result of merging all of the individual linked lists.
+
+```python
+import heapq
+from typing import List, Optional
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        # we can use a min heap for this problem
+        heap = []
+        
+        # Building the initial min-heap
+        for i, node in enumerate(lists):
+            if node:
+                # push the tuple (node.val, index, node) onto the heap
+                heapq.heappush(heap, (node.val, i, node))
+                
+        # create a dummy node and set the current pointer to it
+        dummy = ListNode()
+        curr = dummy
+        
+        while heap:
+            # pop and unpack the tuple from the heap
+            _, i, node = heapq.heappop(heap)
+            # set the pointer.next equal to the node popped from the heap
+            curr.next = node
+            # move the pointer to the popped node
+            curr = node
+            # check if there's a next node in this list
+            if node.next:
+                # push the next node in the same list to the heap
+                heapq.heappush(heap, (node.next.val, i, node.next))
+        
+        return dummy.next
+```
+
+### Key Concepts
+- We use a min heap to merge the k sorted linked lists.
+- We use a dummy node to handle edge cases.
+- We use a while loop to merge the k sorted linked lists.
+- We use a for loop to iterate through the k linked lists.
+- We use a while loop to merge the k sorted linked lists.
+- We return the new head of the merged linked list.
+
+### How to use heapq:
+- heapq.heappush(heap, item) - Push item onto heap
+- heapq.heappop(heap) - Pop the smallest item off the heap
+- heapq.heapify(x) - Transform list x into a heap, in-place, in linear time
+- heapq.heapreplace(heap, item) - Pop and return the smallest item from the heap, and also push the new item. The heap size doesn't change. If the heap is empty, IndexError is raised.
