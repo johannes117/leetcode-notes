@@ -425,3 +425,97 @@ class Solution:
 - heapq.heappop(heap) - Pop the smallest item off the heap
 - heapq.heapify(x) - Transform list x into a heap, in-place, in linear time
 - heapq.heapreplace(heap, item) - Pop and return the smallest item from the heap, and also push the new item. The heap size doesn't change. If the heap is empty, IndexError is raised.
+
+
+## Reverse Nodes in K-Group
+You are given the head of a singly linked list head and a positive integer k.
+
+You must reverse the first k nodes in the linked list, and then reverse the next k nodes, and so on. If there are fewer than k nodes left, leave the nodes as they are.
+
+Return the modified list after reversing the nodes in each group of k.
+
+You are only allowed to modify the nodes' next pointers, not the values of the nodes.
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    # helper function to reverse the sublist of length k
+    def reverse(self, head, k):
+        # initialise new_head variable to None
+        # initialise prev variable to head
+        new_head = None
+        prev = head
+
+        while k:
+            # set next_node to prev next
+            next_node = prev.next
+
+            # set prev next to new_head
+            prev.next = new_head
+            # set new_head to prev
+            new_head = prev
+
+            prev = next_node
+
+            # decrement k
+            k -= 1
+        
+        return new_head
+
+
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        # Two variables, ktail, and new_head
+        # 1 pointer, curr
+        ktail = None
+        new_head = None
+        curr = head
+
+        # while current pointer 
+        while curr: 
+            # initialise a count variable to 0
+            # set current pointer to head
+            count = 0
+            curr = head
+
+            # while count is less than k, and current pointer is not none
+            while count < k and curr:
+                # move current pointer to next
+                curr = curr.next
+                # increment count
+                count += 1
+            
+            # if count equals k, 
+            if count == k:
+                # reverse head is equal to self.reverse(head, k) # use helper function to reverse the list of length k
+                rev_head = self.reverse(head, k)
+                # check if new_head variable is None
+                if not new_head:
+                    # set new_head to reverse head
+                    new_head = rev_head
+                
+                # check if ktail variable exists
+                if ktail:
+                    # set ktail next to reverse head
+                    ktail.next = rev_head
+                
+                # set ktail to head
+                ktail = head
+                # set head to current pointer
+                head = curr
+            
+            # if ktail 
+            if ktail:
+                # set ktail next to head
+                ktail.next = head
+
+        return new_head if new_head else head
+```
+
+### Key Concepts
+- Use a helper function to reverse a sublist of length k
+- In the main function, use variables to keep track of the ktail and the new_head
