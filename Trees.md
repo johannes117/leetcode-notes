@@ -251,3 +251,53 @@ class Solution:
 ### Key Concepts
 - We use a helper function (sameTree) to check if each node is the same as the subRoot tree
 - Use DFS to call the sameTree function on each node. 
+
+
+## Lowest Common Ancestor in Binary Search Tree
+Given a binary search tree (BST) where all node values are unique, and two nodes from the tree p and q, return the lowest common ancestor (LCA) of the two nodes.
+
+The lowest common ancestor between two nodes p and q is the lowest node in a tree T such that both p and q as descendants. The ancestor is allowed to be a descendant of itself.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+        # Use global variable to track LCA, set it to Root (root will always be a common ancestor)
+        # Use a DFS helper function to traverse the tree, set the LCA to the current node.
+        # conditions:
+        # if root is p or q return
+        # if root.val is less than p and q search right
+        # if root.val is more the p and q search left
+        # else return (we are between the p and q therefore we have found the LCA)
+        lca = [root]
+        def search(node):
+            if not node: return
+
+            lca[0] = node
+            if node is p or node is q:
+                return # found LCA
+            elif node.val < p.val and node.val < q.val:
+                search(node.right)
+            elif node.val > p.val and node.val > q.val:
+                search(node.left)
+            else:
+                return # found LCA
+        
+        search(root)
+        return lca[0]
+```
+
+### Key Concepts
+- We can use DFS to traverse the tree
+- Use a global variable to keep track of the lowest common ancestor
+- Update the LCA every time we visit a new node
+- Binary Search Tree properties means that the values to the left will be less than the values to the right so we can perform a binary search.
+- if both p and q values are less than node value we want to search left
+- if both p and q values are greater than node value we want to search right
+- if the node is between p and q, we have found the LCA
