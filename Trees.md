@@ -157,7 +157,54 @@ class Solution:
 - Balanced means the left height and right height have a difference of no more than 1. 
 - We can use the absolute function to help us calculate the difference between two heights. 
 - Absolute value means distance from 0. Example: 10-13 = -3, this gets converted to 3 because its distance from 0 is 3.
+- We can use the in-built abs function to find the absolute value. 
 
 ### Time and Space Complexity
 - Time: O(n) where n is the number of nodes in the tree, we must visit every node once. 
 - Space: O(h) Because its a DFS, where h is the height of the tree. 
+
+## Same Binary Tree
+Given the roots of two binary trees p and q, return true if the trees are equivalent, otherwise return false.
+
+Two binary trees are considered equivalent if they share the exact same structure and the nodes have the same values.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+        # use a helper function to perform DFS on both trees at the same time. 
+            # true if both nodes are none
+            # false if either node is none but the other isn't
+            # false if nodes are not the same value
+            # return the result of the helper function of each tree, left and right
+        # return the helper function of the input trees. 
+        def balanced(p, q):
+            if not p and not q:
+                return True
+            
+            if (p and not q) or (q and not p):
+                return False
+
+            if p.val != q.val:
+                return False
+
+            return balanced(p.left, q.left) and balanced(p.right, q.right)
+
+        return balanced(p, q)
+```
+
+### Key Concepts
+- We can use DFS to check if each node is balanced. 
+- Our base case is that both nodes are None. 
+- If one node exists, and another doesn't, its not balanced
+- If either node has a different value, its not balanced
+
+### Time and Space
+- Time: O(n + m)
+- Space: O(h_p + h_q) where h_p and h_q are the height of each tree respectively.
