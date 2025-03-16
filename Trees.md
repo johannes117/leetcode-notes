@@ -208,3 +208,46 @@ class Solution:
 ### Time and Space
 - Time: O(n + m)
 - Space: O(h_p + h_q) where h_p and h_q are the height of each tree respectively.
+
+## Subtree of Another Tree
+Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+
+A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:   
+    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+        # need to define a sameTree helper function
+        # need to define a has_subtree helper function
+        # has_subtree checks for base case (if not Root)
+        # return true if sameTree between root and subRoot is true
+        # recursively call has_subtree on the left and right nodes
+
+        def sameTree(p, q):
+            if not p and not q: return True # base case
+            if (q and not p) or (p and not q): return False 
+            if p.val != q.val: return False
+
+            return sameTree(p.left, q.left) and sameTree(p.right, q.right)
+        
+        def has_subtree(root):
+            if not root: return False
+
+            if sameTree(root, subRoot):
+                return True
+            
+            return has_subtree(root.left) or has_subtree(root.right)
+        
+        return has_subtree(root)
+```
+
+### Key Concepts
+- We use a helper function (sameTree) to check if each node is the same as the subRoot tree
+- Use DFS to call the sameTree function on each node. 
