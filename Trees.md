@@ -345,6 +345,10 @@ class Solution:
 
             answer.append(level)
         return answer
-
-
 ```
+
+### Key Concepts
+- We can use Breadth First Search to traverse the tree in level order.
+- Every time we visit a node we store the left and right "children" nodes in the queue
+- We popleft from the queue to process that node
+- The loop finishes when we exhaust the queue. 
