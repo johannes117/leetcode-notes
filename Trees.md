@@ -301,3 +301,50 @@ class Solution:
 - if both p and q values are less than node value we want to search left
 - if both p and q values are greater than node value we want to search right
 - if the node is between p and q, we have found the LCA
+
+## Binary Tree Level Order Traversal
+Given a binary tree root, return the level order traversal of it as a nested list, where each sublist contains the values of nodes at a particular level in the tree, from left to right.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        # Use BFS to traverse tree
+        # return if root none
+        # initialise queue, append root, initialise answer list
+        # loop while queue exists
+            # initialise level list, set n to the length of the queue
+            # inner for loop of length n
+                # grab node from queue using popleft
+                # append the node value to the level list
+                # append the left and right nodes to the queue if they exist
+            # append level to answer list
+        #return answer list
+
+        if root is None: return []
+
+        queue = deque()
+        queue.append(root)
+        answer = []
+
+        while queue:
+            level = []
+            n = len(queue)
+            for i in range(n):
+                node = queue.popleft()
+                level.append(node.val)
+
+                if node.left: queue.append(node.left)
+                if node.right: queue.append(node.right)
+
+            answer.append(level)
+        return answer
+
+
+```
