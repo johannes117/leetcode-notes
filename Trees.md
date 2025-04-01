@@ -352,3 +352,47 @@ class Solution:
 - Every time we visit a node we store the left and right "children" nodes in the queue
 - We popleft from the queue to process that node
 - The loop finishes when we exhaust the queue. 
+
+## Binary Tree Right Side View
+You are given the root of a binary tree. Return only the values of the nodes that are visible from the right side of the tree, ordered from top to bottom.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        # Check if Root exists
+        # Level Order Traversal using BFS
+        # Define a queue with the value of root, define a result list
+        # loop while queue
+            # store length of q in variable (level length)
+            # loop through length of q
+                # popleft the node from the queue
+                # if index is equal to level length minus one. This means we have the rightmost node in the level. Append node.val to result
+                # if node left and right, append those nodes to the queue
+        # return result
+        if not root: return []
+        queue = deque([root])
+        res = []
+
+        while queue:
+            level_len = len(queue)
+            for i in range(level_len):
+                node = queue.popleft()
+                if i == level_len - 1: res.append(node.val) # This gets us the right most node in the level.
+                if node.left: queue.append(node.left)
+                if node.right: queue.append(node.right)
+        
+        return res
+```
+
+### Key Concepts
+- We use the same algorithm as the Level Order Traversal with Breadth First Search
+- We can use a queue to force the level traversal.
+- We store the length of the queue before the for loop because the for loop itself is going to add new nodes to the queue. So we want to ensure we only loop for the nodes in the queue that are on the level. 
+- Key basecase for each level, if the index of the inner for loop is equal to the length of the level - 1, then we are at the rightmost node for that level
