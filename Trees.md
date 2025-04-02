@@ -396,3 +396,57 @@ class Solution:
 - We can use a queue to force the level traversal.
 - We store the length of the queue before the for loop because the for loop itself is going to add new nodes to the queue. So we want to ensure we only loop for the nodes in the queue that are on the level. 
 - Key basecase for each level, if the index of the inner for loop is equal to the length of the level - 1, then we are at the rightmost node for that level
+
+## Count Good Nodes in Binary Tree
+Within a binary tree, a node x is considered good if the path from the root of the tree to the node x contains no nodes with a value greater than the value of node x
+
+Given the root of a binary tree root, return the number of good nodes within the tree.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def goodNodes(self, root: TreeNode) -> int:
+        # Can solve using Iterative DFS using a stack
+        # keep a good_nodes counter, initialise a stack with a tuple root, and float('-inf')
+        # loop while stack
+        # unpack the tuple from the stack using pop
+        # if the largest value is less than or equal to the node, this is a good node, increment good_nodes counter
+            # set largest to the max of largest and node.val
+            # if node.right and node.left we want to stack.append the tuple of the node and largest. 
+        good_nodes = 0
+        stack = [(root, float('-inf'))]
+
+        while stack:
+            node, largest = stack.pop()
+
+            if largest <= node.val:
+                good_nodes +=1
+            
+            largest = max(largest, node.val)
+
+            if node.right: stack.append((node.right, largest))
+            if node.left: stack.append((node.left, largest))
+
+        return good_nodes
+
+            
+        #return the good nodes
+```
+
+### Key Concepts
+- We can use Iterative DFS to solve this question
+- Maintain a stack which stores a tuple for each node containing the node itself and the largest value up until that node was added to the stacck
+- When we unpack the node and largest value from the stack, we can compare the two values to determine if its a good node. 
+- We then calculate the new largest
+- Then add the left or right nodes to the stack with the new largest value if they exist. 
+- return the final good_nodes count. 
+
+## Time and Space Complexity
+- Time: O(n), since we traverse through every node in the tree using DFS
+- Space: O(n), in iterative DFS we maintain a stack in memory which can at worst contain up to n nodes. 
