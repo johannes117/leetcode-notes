@@ -450,3 +450,53 @@ class Solution:
 ## Time and Space Complexity
 - Time: O(n), since we traverse through every node in the tree using DFS
 - Space: O(n), in iterative DFS we maintain a stack in memory which can at worst contain up to n nodes. 
+
+
+## Valid Binary Search Tree
+Given the root of a binary tree, return true if it is a valid binary search tree, otherwise return false.
+
+A valid binary search tree satisfies the following constraints:
+
+The left subtree of every node contains only nodes with keys less than the node's key.
+The right subtree of every node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees are also binary search trees.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# Valid BST: left subtree contains only nodes with keys less than, right subtree contains only nodes with keys greater than
+# Create a helper function with 3 parameters, the node, the minimum, the maximum
+# the base case is if not node
+# if the node value is outside of the min max bounds return False
+# we want to return the helper function recursively for the left and the right. 
+# outside the helper function we simply return the helper function with min max infinity
+
+
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def is_valid(node, minimum, maximum):
+            if not node: return True
+
+            if node.val <= minimum or node.val >= maximum:
+                return False
+            
+            return is_valid(node.left, minimum, node.val) and is_valid(node.right, node.val, maximum)
+        
+        return is_valid(root, float('-inf'), float('inf'))
+
+```
+
+### Key Concepts
+- We can use recursive DFS to solve this problem.
+- We can use a helper function to traverse down the left or the right of the tree
+- If we traverse down the left, we always want to check that the left node is less than the current node. So we simply pass the current node value as the maximum
+- Same with down the right of the tree, we want to check if each node is strictly bigger than the previous, so we set the minimum to the current node before we pass it down. 
+- The base case is if we find a null node, then we return True which will begin to unravel the callstack. 
+
+### Time and Space Complexity
+- Time: O(n), because we are visiting every node once using DFS
+- Space: O(h), where h is the height of the tree. (DFS needs to store at least h nodes in the callstack)
