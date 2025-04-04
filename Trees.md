@@ -500,3 +500,56 @@ class Solution:
 ### Time and Space Complexity
 - Time: O(n), because we are visiting every node once using DFS
 - Space: O(h), where h is the height of the tree. (DFS needs to store at least h nodes in the callstack)
+
+## Kth Smallest Integer in BST
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) in the tree.
+
+A binary search tree satisfies the following constraints:
+
+The left subtree of every node contains only nodes with keys less than the node's key.
+The right subtree of every node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees are also binary search trees.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# Inorder traversal using Recursive DFS
+# initialise 2 global variables count and answer. 
+# define dfs helper function
+# base case simply returns
+# call dfs on the left node
+# check if count is 1: set answer to node value
+# decrement count
+# if count is above 0: call dfs on right node
+# call dfs on the root and return answer. 
+
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        count = [k]
+        answer = [0]
+
+        def dfs(node):
+            if not node: return
+
+            dfs(node.left)
+
+            if count[0] == 1:
+                answer[0] = node.val
+            
+            count[0] -= 1
+            if count[0] > 0:
+                dfs(node.right)
+        
+        dfs(root)
+        return answer[0]
+```
+
+### Key Concepts
+- Can be solved using Inorder Traversal using Recursive DFS
+- Since we want to return the kth smallest element, we want to traverse through the BST k times. 
+- If we decrement the k value every time we traverse a node, this will help us identify the kth smallest. 
+- Because of the BST properties, once we reach our first base case, we will begin processing each node and decrementing the counter.
