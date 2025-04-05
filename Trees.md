@@ -553,3 +553,69 @@ class Solution:
 - Since we want to return the kth smallest element, we want to traverse through the BST k times. 
 - If we decrement the k value every time we traverse a node, this will help us identify the kth smallest. 
 - Because of the BST properties, once we reach our first base case, we will begin processing each node and decrementing the counter.
+
+
+## Construct Binary Tree from Preorder and Inorder Traversal
+You are given two integer arrays preorder and inorder.
+
+preorder is the preorder traversal of a binary tree
+inorder is the inorder traversal of the same tree
+Both arrays are of the same size and consist of unique values.
+Rebuild the binary tree from the preorder and inorder traversals and return its root.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        # Base Case
+        if not preorder or not inorder:
+            return None
+        
+        root_val = preorder[0]
+        root = TreeNode(root_val)
+
+        root_index = inorder.index(root_val) # This finds the index of the current root value in the inorder list
+
+        # Recursively build the left tree
+        root.left = self.buildTree(preorder[1:root_index+1], inorder[:root_index])
+        # Recursively build the right tree
+        root.right = self.buildTree(preorder[root_index+1:], inorder[root_index+1:])
+        return root
+```
+
+### Key Concepts
+- In preorder traversal: root --> left subtree --> right subtree
+- In inorder traversal: left subtree --> root --> right subtree
+- First element in preorder is the root
+- We can then split the inorder list using the index of the root that we found
+- For Left Subtree: elements before root in inorder, elements after root for preorder
+- For Right Subtree: elements after root in inorder, elements before root for preorder
+
+- Creating a node: node = TreeNode(value)
+- Array Slicing: array[start:stop:step]
+- start is inclusive (we include the element at this index)
+- stop is exclusive (we exclude the element at this index)
+
+Example:
+- preorder = [1,2,3,4], inorder [2,1,3,4]
+1. The root is the first element of preorder, which is 1. [(1),2,3,4]
+2. Find the position/index of root (1) in the inorder array: it's at index 1. [2,(1),3,4]
+So root_index = 1
+Left Subtree: 
+- preorder = [1,2,3,4], inorder = [2,1,3,4]
+- preorder[1:root_index+1] = preorder[1:1+1] = preorder[1:2] = [2] "include element at index 1, but not at index 2"
+- inorder[:root_index] = [2]
+Right Subtree: 
+- preorder[root_index+1:] = preorder[1+1:] = preorder[2:] = [3,4] "start from index + 1, until the end of the list"
+- inorder[root_index+1:] = [3,4] "every element after the root index"
+So we end up with 
+```
+root.left = self.buildTree([2],[2])
+root.right = self.buildTree([3,4],[3,4])
+```
