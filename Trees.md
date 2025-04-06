@@ -619,3 +619,75 @@ So we end up with
 root.left = self.buildTree([2],[2])
 root.right = self.buildTree([3,4],[3,4])
 ```
+
+## Binary Tree Maximum Path Sum
+Given the root of a non-empty binary tree, return the maximum path sum of any non-empty path.
+
+A path in a binary tree is a sequence of nodes where each pair of adjacent nodes has an edge connecting them. A node can not appear in the sequence more than once. The path does not necessarily need to include the root.
+
+The path sum of a path is the sum of the node's values in the path.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        if not root: return 0
+
+        self.max_path_sum = root.val
+        self.dfs(root)
+
+        return self.max_path_sum
+
+    def dfs(self, node):
+        if not node: return 0
+
+        # If leaf node, return max of node val or global max
+        if not node.left and not node.right:
+            self.max_path_sum = max(node.val, self.max_path_sum)
+            return node.val
+        
+        # Call DFS on the left and right nodes
+        l_path_sum = self.dfs(node.left)
+        r_path_sum = self.dfs(node.right)
+
+        self.max_path_sum = max(
+            self.max_path_sum,
+            node.val,
+            node.val + l_path_sum,
+            node.val + r_path_sum,
+            node.val + l_path_sum + r_path_sum
+        )
+
+        return max(
+            node.val,
+            node.val + l_path_sum,
+            node.val + r_path_sum,
+            0
+        )
+
+# Time: O(n), since we are visiting every node atleast once using DFS
+# Space: O(h), where h is the height of the tree. 
+```
+
+### Key Concepts:
+- Postorder Traversal with DFS
+- maintain a global variable to track the maximum path sum
+- call a DFS helper function to compute the max path sum from the root
+- Inside helper function:
+- - Check if not node, return 0 (first base case)
+- - if leaf node, second base case, (no left or right nodes): 
+- we want to set the max path sum to the max of the global variable compared to the current node value. then early return
+- calculate left path sum and right path sum on left and right subtrees using helper function
+- we want to then set the max global variable to the max of:
+- - the global max
+- - the node value
+- - node + left and right path sums
+- - node + left
+- - node + right
+= return the max of the node,  node + left, node + right or 0. 
