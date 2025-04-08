@@ -691,3 +691,75 @@ class Solution:
 - - node + left
 - - node + right
 = return the max of the node,  node + left, node + right or 0. 
+
+
+## Serialize and Deserialize Binary Tree
+Implement an algorithm to serialize and deserialize a binary tree.
+
+Serialization is the process of converting an in-memory structure into a sequence of bits so that it can be stored or sent across a network to be reconstructed later in another computer environment.
+
+You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure. There is no additional restriction on how your serialization/deserialization algorithm should work.
+
+Note: The input/output format in the examples is the same as how NeetCode serializes a binary tree. You do not necessarily need to follow this format.
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Codec:
+    
+    # Encodes a tree to a single string.
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        res = []
+
+        def dfs(node):
+            if not node: 
+                res.append("N")
+                return
+            
+            res.append(str(node.val))
+            dfs(node.left)
+            dfs(node.right)
+        
+        dfs(root)
+        return ",".join(res)
+        
+    # Decodes your encoded data to tree.
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        vals = data.split(",")
+        self.i = 0
+
+        def dfs():
+            if vals[self.i] == "N":
+                self.i += 1
+                return None # Basecase
+            
+            node = TreeNode(int(vals[self.i]))
+            self.i += 1
+            node.left = dfs() # This will incrememnt the index until we are ready to process the node.right
+            node.right = dfs()
+
+            return node
+        
+        return dfs()
+```
+
+### Key Concepts:
+- We can use DFS or BFS to solve this, but DFS is less code. 
+- We are using Preorder traversal to build the serialize string: "Node --> Left --> Right" 
+- Our base case is if we have Null left and Null right nodes. This identifies a Leaf Node. 
+- Every node we visit during the preorder traversal gets appended to the list. 
+- In Deserialize, we can rebuild the tree in a similar way
+- The basecase is that the current value in the list is the special character "N". This returns None because we don't need to attach a None node to the tree
+- If we pass the base case, it means we are processing an actual value. We simply use the TreeNode class to create a new node. 
+- We then recursively build its left and right children. This works because the index keeps track of where we are in the input list, and when we are finished processing the left children, the index will be at the first node for the right children. 
+- We need to make sure we return the node at the end of the DFS function
+- We can simply just return the dfs helper function which will return the root node of the reconstructed tree. 
+
+### Time and Space Complexity
+- Time: O(n), because its a DFS for both serialize and deserialize
+- Space: O(n), We need to store every node in the result list for serialise, and we need to store the callstack in memory aswell which would be the height of the tree. This would be O(n+h) but it can be simplified to O(n).
