@@ -39,3 +39,53 @@ class KthLargest:
 - Maintain a min heap with exactly k elements, where the smallest element in the heap is the kth largest element in the stream
 - The init function simply initialises k, min_heap as a list, and calls the add method for every number in the input array
 - The add method, pushes the value on to the heap, pops if the heap length is greater than k, and returns the smallest element in the heap. 
+
+
+## Last Stone Weight
+You are given an array of integers stones where stones[i] represents the weight of the ith stone.
+
+We want to run a simulation on the stones as follows:
+
+At each step we choose the two heaviest stones, with weight x and y and smash them togethers
+If x == y, both stones are destroyed
+If x < y, the stone of weight x is destroyed, and the stone of weight y has new weight y - x.
+Continue the simulation until there is no more than one stone remaining.
+
+Return the weight of the last remaining stone or return 0 if none remain.
+
+```python
+# We need to use a max heap (a negated min heap)
+# loop through each stone in the list, negate them (-)
+# use heapify to turn it into a "max" heap
+# while the length of the heap is above 1
+# extract the two heaviest stones. (remember to negate to get the actual weights)
+# If they are not equal, calculate the remaining weight and put it back (heappush). don't forget to negate
+# return the wieght of the last stone, or 0 if none remain. 
+import heapq
+
+class Solution:
+    def lastStoneWeight(self, stones: List[int]) -> int:
+        max_heap = [-stone for stone in stones]
+        heapq.heapify(max_heap)
+
+        while len(max_heap) > 1:
+            first = -heapq.heappop(max_heap)
+            second = -heapq.heappop(max_heap)
+
+            if first != second:
+                heapq.heappush(max_heap, -(first - second))
+        
+        if max_heap:
+            return -max_heap[0]
+        else:
+            return 0
+```
+
+### Key Concepts:
+- We need to use a max heap to solve this problem. A max heap is just a negated min heap. 
+- we get the max_heap by negating each stone in the stones array and calling heapify. 
+- While our max heap is greater than 1, we want to pop the two largest values
+- When we pop values, we need to negate them to turn them into their original values again. 
+- Now we can check if they are not equal, we want to put back the difference of the two stones on to the heap. We need to negate this value again to maintain the properties of the max heap. 
+- If there is 1 stone left in the heap, we want to return it, remembering to negate it again. 
+- Else we return 0. 
