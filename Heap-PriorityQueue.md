@@ -136,3 +136,41 @@ class Solution:
 ### Time and Space Complexity:
 - Time: O(n log k), n because we loop through n points, log k because we push and pop from a heap of at most size k.
 - Space: O(k), because we are storing at most k many things in the heap. 
+
+## Kth Largest Element in an Array
+Given an unsorted array of integers nums and an integer k, return the kth largest element in the array.
+
+By kth largest element, we mean the kth largest element in the sorted order, not the kth distinct element.
+
+Follow-up: Can you solve it without sorting?
+
+```python
+# Maintain a min heap of size k
+# after processing all elements, the root of the heap will be the kth largest element
+# initialise a heap
+# loop through input array
+# push the num onto the heap
+# if the length of the heap exceeds k, heappop
+# return the root of the heap [0]
+import heapq
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        heap = []
+
+        for num in nums:
+            heapq.heappush(heap, num)
+
+            if len(heap) > k:
+                heapq.heappop(heap)
+            
+        return heap[0]
+```
+
+### Key Concepts:
+- We can use a min-heap to do this without sorting, in O(n log k) Time. 
+- For each num in nums, push to heap, if heap larger than k, pop from heap. return the root of the heap.
+
+### Time and Space:
+- Time: O(n log k), loop through n values, pop and push is O(log k)
+- since we're doing O(log k) work for each of the n elements, the total time complexity is O(n log k)
+- Space: O(k): Heap never grows larger than k elements. 
