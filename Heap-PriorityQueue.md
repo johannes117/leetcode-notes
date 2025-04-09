@@ -89,3 +89,50 @@ class Solution:
 - Now we can check if they are not equal, we want to put back the difference of the two stones on to the heap. We need to negate this value again to maintain the properties of the max heap. 
 - If there is 1 stone left in the heap, we want to return it, remembering to negate it again. 
 - Else we return 0. 
+
+
+## K Closest Points to Origin
+You are given an 2-D array points where points[i] = [xi, yi] represents the coordinates of a point on an X-Y axis plane. You are also given an integer k.
+
+Return the k closest points to the origin (0, 0).
+
+The distance between two points is defined as the Euclidean distance (sqrt((x1 - x2)^2 + (y1 - y2)^2)).
+
+You may return the answer in any order.
+
+```python
+# Need to use a Max Heap so that we pushpop the kth largest tuple from the heap
+# define a helper function to compute the distance from (0,0), simply return x**2 + y**2
+# initialise a heap
+# loop through x and y in points array
+# calculate the distance using helper function
+# if the heaplength is less than k, we want to pushpop, else just push. 
+# dont forget to negate the distance when pushing
+# at the end we need to return a list of x, y values that are left in the heap. 
+import heapq
+class Solution:
+    def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+        def dist(x, y):
+            return x**2 + y**2
+        
+        heap = []
+        for x, y in points:
+            d = dist(x, y)
+
+            if len(heap) < k:
+                heapq.heappush(heap, (-d, x, y))
+            else: 
+                heapq.heappushpop(heap, (-d, x, y))
+
+        return [(x,y) for d, x, y in heap]
+```
+
+### Key Concepts
+- We can use a Max Heap to maintain a list of the closest points to 0. 
+- We use a max heap, because when we do a pushpop, its going to push the current point on to the heap, and pop the point thats furthest from 0. 
+- We use a helper function to calculate the distance: d = x**2 + y**2. This is simplified for this usecase. 
+- We need to make sure to negate the distance when pushing to the heap, this is to make the heap act like a max heap.
+
+### Time and Space Complexity:
+- Time: O(n log k), n because we loop through n points, log k because we push and pop from a heap of at most size k.
+- Space: O(k), because we are storing at most k many things in the heap. 
