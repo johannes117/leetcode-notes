@@ -174,3 +174,59 @@ class Solution:
 - Time: O(n log k), loop through n values, pop and push is O(log k)
 - since we're doing O(log k) work for each of the n elements, the total time complexity is O(n log k)
 - Space: O(k): Heap never grows larger than k elements. 
+
+## Task Scheduler
+You are given an array of CPU tasks tasks, where tasks[i] is an uppercase english character from A to Z. You are also given an integer n.
+
+Each CPU cycle allows the completion of a single task, and tasks may be completed in any order.
+
+The only constraint is that identical tasks must be separated by at least n CPU cycles, to cooldown the CPU.
+
+Return the minimum number of CPU cycles required to complete all tasks.
+
+```python
+# Each Task, 1 Unit of time
+# Minimise Idle Time
+# count the frequency of each task, store in hashmap (Counter)
+# create a maxHeap using the negated counts. (you can use heapify)
+# initialise a time counter, and a double ended queue (deque)
+# while heap or queue are non-empty
+# Increment the time
+# if heap, pop from heap, decrement the value (we can actually add 1 since the values are negated)
+# append the popped value to the queue, [val, time+n]
+# if queue, and the top value in the queue's timestamp is equal to time:
+# pop from queue and push to heap. 
+# return the final time. 
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        
+        taskCount = Counter(tasks)
+        maxHeap = [-task for task in taskCount.values()]
+        heapq.heapify(maxHeap) 
+
+        time = 0
+        queue = deque()
+
+        while maxHeap or queue:
+            time += 1
+            if maxHeap:
+                task = 1 + heapq.heappop(maxHeap) # Add one here to actually decrement the value
+                if task:
+                    # add that value to the queue
+                    queue.append([task, time+n])
+            
+            if queue and queue[0][1] == time:
+                heapq.heappush(maxHeap, queue.popleft()[0])
+        return time
+```
+
+### Key Concepts
+- We can use a max Heap and a Queue to track which task should be processed in what order. 
+- The queue tracks the "Idle" time, by storing the task along with a timestamp
+- When we reach that timestamp in the loop, we popleft that task from the queue and add it back to the heap. 
+- The heap allows us to process the most frequent tasks first, this will allow us to find the least Interval time value. 
+
+### Time and Space Complexity
+- Time: O(n * m), where n is the number of tasks and m is the number of wait time "n".
+Note: The queue will have at most 26 values, which would make accessing it O(log26), which in this case is essentially constant time. 
+- Space: O(n), we are storing atleast n values in a heap.
