@@ -230,3 +230,81 @@ class Solution:
 - Time: O(n * m), where n is the number of tasks and m is the number of wait time "n".
 Note: The queue will have at most 26 values, which would make accessing it O(log26), which in this case is essentially constant time. 
 - Space: O(n), we are storing atleast n values in a heap.
+
+
+## Design Twitter
+Implement a simplified version of Twitter which allows users to post tweets, follow/unfollow each other, and view the 10 most recent tweets within their own news feed.
+
+Users and tweets are uniquely identified by their IDs (integers).
+
+Implement the following methods:
+
+Twitter() Initializes the twitter object.
+void postTweet(int userId, int tweetId) Publish a new tweet with ID tweetId by the user userId. You may assume that each tweetId is unique.
+List<Integer> getNewsFeed(int userId) Fetches at most the 10 most recent tweet IDs in the user's news feed. Each item must be posted by users who the user is following or by the user themself. Tweets IDs should be ordered from most recent to least recent.
+void follow(int followerId, int followeeId) The user with ID followerId follows the user with ID followeeId.
+void unfollow(int followerId, int followeeId) The user with ID followerId unfollows the user with ID followeeId.
+
+```python
+class Twitter:
+
+    def __init__(self):
+        # initialise time (timestamp), tweets as a dictionary, and following as a dictionary
+        self.time = 0
+        self.tweets = {}
+        self.following = {}
+        
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        # initialise users data structures if they don't exist
+        if userId not in self.tweets:
+            self.tweets[userId] = []
+        if userId not in self.following:
+            self.following[userId] = set([userId])
+        # add tweet with current timestamp and increment time. 
+        self.tweets[userId].append((self.time, tweetId))
+        self.time += 1
+        
+
+    def getNewsFeed(self, userId: int) -> List[int]:
+        # initialise user if they dont exist
+        if userId not in self.tweets:
+            self.tweets[userId] = []
+        if userId not in self.following:
+            self.following[userId] = set([userId])
+        # collect all tweets from users that this user follows
+        all_tweets = []
+        for followee in self.following[userId]:
+            if followee in self.tweets:
+                all_tweets.extend(self.tweets[followee])
+        # sort by time (most recent first) and take top 10
+        all_tweets.sort(reverse=True)
+        return [tweetId for time, tweetId in all_tweets[:10]]
+        
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        # initialise user if they dont exist
+        if followerId not in self.following:
+            self.following[followerId] = set([followerId])
+        if followerId not in self.tweets:
+            self.tweets[followerId] = []
+        # add followee to followers following set
+        self.following[followerId].add(followeeId)        
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        # can't unfollow yourself and can only unfollow if following exists
+        if followerId == followeeId or followerId not in self.following:
+            return
+        # remove followee from follower's following set if they exist. 
+        self.following[followerId].discard(followeeId)
+```
+
+### Key Concepts:
+- Can use dictionaries to mimic a document database
+- Can use sorting and array slicing to get the top 10 tweets. Probably should use a heap
+
+### Time and Space Complexity
+Time Complexity:
+- postTweet: O(1)
+- follow/unfollow: O(1)
+- getNewsFeed: O(NlogN) where N is the total number of tweets from all followed users (due to sorting)
