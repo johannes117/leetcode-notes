@@ -308,3 +308,71 @@ Time Complexity:
 - postTweet: O(1)
 - follow/unfollow: O(1)
 - getNewsFeed: O(NlogN) where N is the total number of tweets from all followed users (due to sorting)
+
+## Find Median From Data Stream
+The median is the middle value in a sorted list of integers. For lists of even length, there is no middle value, so the median is the mean of the two middle values.
+
+For example:
+
+For arr = [1,2,3], the median is 2.
+For arr = [1,2], the median is (1 + 2) / 2 = 1.5
+Implement the MedianFinder class:
+
+MedianFinder() initializes the MedianFinder object.
+void addNum(int num) adds the integer num from the data stream to the data structure.
+double findMedian() returns the median of all elements so far.
+
+```python
+# SmallHeap (Max Heap)
+# Large Heap (Min Heap)
+# Median is either the top element of one heap (odd number of elements) or the average of the tops of both heaps
+# addNumm
+# check if heaps are equal
+            # add to small, but go through large first (pushpop). negate the value that comes out of the large heap when inserting into the small heap
+        # else
+            # add to large, but go through small first (pushpop). negate the value that comes out of the small heap. pushpop using the negated num value
+# findMedian:
+ # if heaps are equal - even number of elements, average of the two
+            # return the average of the two middle values
+            # (get negated top from small plus top of large) divided by 2
+        # else
+            #  return the negated top of small. odd number of elements, top of small has the median. 
+
+class MedianFinder:
+
+    def __init__(self):
+        # init the small and large heaps as lists
+        self.small = []
+        self.large = []
+
+    def addNum(self, num: int) -> None:
+        if len(self.small) == len(self.large):
+            # Add to small, go through large
+            heapq.heappush(self.small, -heapq.heappushpop(self.large, num))
+        else:
+            # add to large if uneven, go through small
+            heapq.heappush(self.large, -heapq.heappushpop(self.small, -num))   
+
+    def findMedian(self) -> float:
+        if len(self.small) == len(self.large):
+            # take the average of the middle values
+            return (-self.small[0] + self.large[0]) / 2
+        else:
+            # take the top value of small
+            return -self.small[0]       
+```
+
+### Key Concepts:
+- If we maintain a small (max_heap) and a large (min_heap), 
+- where the large heap contains values that are all greater than or equal to the values in the small heap
+- Then we can take the smallest value in the large heap, and the largest value in the small heap and find the median value.
+- If the heaps are unequal, then we simply take the largest value in the small heap. 
+- This works because we always add to the small heap if the heap lengths are equal. 
+- We use pushpop through the other heap first because this ensures we always maintain the small and large heap properties where values in small <= large
+
+### Time and Space Complexity
+Time: 
+- addNum: O(logn) - Both heappush and heappushpop operations take O(logN) time where N is the number of elements in the heap. 
+- findMedian: O(1)
+Space:
+- O(n): We store all N elements across the two heaps. 
