@@ -91,3 +91,54 @@ class Solution:
 ### Time and Space Complexity:
 - Time: approximately O(n**t)
 - Space: O(n)
+
+## Combination Sum II
+You are given an array of integers candidates, which may contain duplicates, and a target integer target. Your task is to return a list of all unique combinations of candidates where the chosen numbers sum to target.
+
+Each element from candidates may be chosen at most once within a combination. The solution set must not contain duplicate combinations.
+
+You may return the combinations in any order and the order of the numbers in each combination can be in any order.
+
+```python
+# Res and Sol lists
+# Sort the list
+# dfs backtrack function with index, current and total
+# basecases: 
+# - total equals target (found), 
+# - total greater than target or index equal len of candidates
+# recursive cases: include candidate at index or skip
+# include, append candidate, run dfs, pop candidate
+# skip, bump index while candidate equals index + 1
+# run dfs
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        res, sol = [], []
+        candidates.sort()
+
+        def backtrack(i, sol, total):
+            # Found Basecase: 
+            if total == target:
+                res.append(sol.copy())
+                return
+            if total > target or i == len(candidates):
+                return 
+            
+            # include candidate
+            sol.append(candidates[i])
+            backtrack(i + 1, sol, total+candidates[i])
+            sol.pop()
+            # skip candidate
+            while i + 1 < len(candidates) and candidates[i] == candidates[i+1]:
+                i += 1
+            backtrack(i + 1, sol, total)
+
+        backtrack(0, sol, 0)
+        return res
+```
+
+### Key Concepts
+- Similar solution to combination sum 1, instead we sort the candidates, and use a while loop to skip duplicates. 
+
+### Time and Space Complexity
+- Time: approximately O(n**t)
+- Space: O(n)
