@@ -194,3 +194,53 @@ class Solution:
 
 - Time: O(n!), each level is n times larger than the level before
 - Space: approx O(n), where n is the height of the callstack.
+
+## Subsets II
+
+You are given an array nums of integers, which may contain duplicates. Return all possible subsets.
+
+The solution must not contain duplicate subsets. You may return the solution in any order.
+
+```python
+# return all possible subsets from the input array nums. Contains duplicates.
+# Sort the input array
+# Base case reached the ens of the array
+# Include the current element (append then pop)
+# Skip all duplicates at this level (while loop)
+# exclude the current element and its duplicates.
+
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        res, sol = [], []
+        nums.sort()
+
+        def backtrack(i, sol):
+            # Basecase: reached the end of the array
+            if i == len(nums):
+                res.append(sol.copy())
+                return
+
+            # Include the current element
+            sol.append(nums[i])
+            backtrack(i + 1, sol)
+            sol.pop() # backtrack
+
+            # skip duplicates
+            while i + 1 < len(nums) and nums[i] == nums[i+1]:
+                i += 1
+
+            # Don't include current element
+            backtrack(i+1, sol)
+
+        backtrack(0, sol)
+        return res
+```
+
+### Key Concepts
+
+- Similar solution to the Combination2 solution
+- We can handle duplicates using a while loop that will increment the pointer in a sorted array until we have reached the last duplicate for that element.
+- Basecase: reached the end of the array
+- Decision 1: Include Element then backtrack
+- Skip Duplicates:
+- Decision 2: Don't include element
