@@ -244,3 +244,85 @@ class Solution:
 - Decision 1: Include Element then backtrack
 - Skip Duplicates:
 - Decision 2: Don't include element
+
+## Word Search
+
+Given a 2-D grid of characters board and a string word, return true if the word is present in the grid, otherwise return false.
+
+For the word to be present it must be possible to form it with a path in the board with horizontally or vertically neighboring cells. The same cell may not be used more than once in a word.
+
+```python
+# m x n grid of characters board, and a string word
+# return true if word exists in grid.
+# check for empty inputs
+# initialise rows and cols length variables
+# Helper function for DFS: row column and word index.
+# Base case: if we've matched all characters in the word (index equals length of word) return true
+# out of bounds or character doesn't match return false
+# Mark the cell as visited by changing to # (store in temp)
+# explore all 4 directions.
+# restore the cell (backtrack)
+# return found
+# try starting from each cell in the grid.
+# nested for loop rows and cols
+# if character equals first c in word, and dfs returns true return True
+# otherwise return false.
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        if not board or not word:
+            return False
+
+        rows, cols = len(board), len(board[0])
+
+        def dfs(r, c, index):
+            # Base case: if index is len word
+            if index == len(word):
+                return True
+
+            # Check for out of bounds or if character doesn't match
+            if r < 0 or r >= rows or c < 0 or c >= cols or word[index] != board[r][c]:
+                return False
+
+            # replace character with #
+            temp = board[r][c]
+            board[r][c] = "#"
+
+            # check every direction:
+            found = (
+                dfs(r+1, c, index+1) or
+                dfs(r-1, c, index+1) or
+                dfs(r, c+1, index+1) or
+                dfs(r, c-1, index+1)
+            )
+
+            #backtrack, put character back
+            board[r][c] = temp
+            return found
+
+        # Try every element in the grid to start
+        for r in range(rows):
+            for c in range(cols):
+                if board[r][c] == word[0] and dfs(r, c, 0):
+                    return True
+
+        return False
+```
+
+### Key Concepts
+
+- The basecase is if the index reaches the length of the word
+- We use a nested for loop to start with every element in the grid
+- if we reach an element that matches the first letter in the word, we want to call our dfs function on it
+- DFS function takes in the row, the column and the current index of the word that we are checking.
+- We need to handle out of bounds checks, and also whether the character we are visiting is not what we are looking for.
+- We use a temporary variable to store the current character, and then we replace it with a special character "#"
+- This is so that we can mark that cell in the grid as visited, we will "backtrack" and undo this later if needed
+- We want to check every direction, which means we need to call dfs with row +-1 and col +-1 to check for the next letter in the word (index+1)
+- if any direction returns true, the found variable will be true.
+- after checking every direction from the current element we want to backtrack and restore from the temporary variable.
+- we can simply return the found variable at the end of the helper function.
+
+### Time and Space Complexity
+
+- Time: O(N x M x 4^L), where n and m represent the rows and columns and L represents the length of the word.
+- Space: O(L), where l is the length of the word due to the Recursion stack. We are using in place modification so no additional space for board.
