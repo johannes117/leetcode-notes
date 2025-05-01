@@ -326,3 +326,43 @@ class Solution:
 
 - Time: O(N x M x 4^L), where n and m represent the rows and columns and L represents the length of the word.
 - Space: O(L), where l is the length of the word due to the Recursion stack. We are using in place modification so no additional space for board.
+
+
+
+## Palindrome Partitioning
+Given a string s, split s into substrings where every substring is a palindrome. Return all possible lists of palindromic substrings.
+
+You may return the solution in any order.
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        res, sol = [], []
+
+        def backtrack(i, sol):
+            # Base case: reached the end of the string
+            if i >= len(s):
+                res.append(sol.copy())
+                return 
+            
+            # try all possible substrings
+            for j in range(i+1, len(s)+1):
+                substring = s[i:j]
+                if substring == substring[::-1]:
+                    sol.append(substring)
+                    backtrack(j, sol)
+                    sol.pop() # backtrack
+
+        backtrack(0, sol)
+        return res
+```
+
+### Key Concepts:
+- We are trying to find different partitions instead of permutations. Think of it as slicing the string in place to create substrings. 
+- We want to return a list of substrings that are palindromes (same backwards)
+- Basecase: our index has reached the end of the string. We want to append our current path to the result list
+
+### Time and Space Complexity
+- Time: O(n*2^n), where n is the length of the string. This is because there are 2^N number of ways to partition a string, 
+and each partition we have to use O(n) time to check if the substrings are palindromes
+- Space: O(n), due to the height of the recursive callstack
