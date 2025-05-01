@@ -429,3 +429,72 @@ class Solution:
 ### Time and Space Complexity
 - Time: O(4^n), because each n multiplies by at most 4
 - Space: O(n), height of the callstack
+
+## N-Queens
+The n-queens puzzle is the problem of placing n queens on an n x n chessboard so that no two queens can attack each other.
+
+A queen in a chessboard can attack horizontally, vertically, and diagonally.
+
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a unique board layout where the queen pieces are placed. 'Q' indicates a queen and '.' indicates an empty space.
+
+You may return the answer in any order.
+
+```python
+# place N queens on an N x N chessboard so that no two queens attach eachother. 
+# 3 sets, col, posDiag(r+c), negDiag(r-c)
+# res list
+# board of "." n * n
+# backtrack function with row as input parameter 
+# basecase: if row equal to n, append a list of row string solutions
+# loop through columns
+# check the 3 sets, if so continue
+# add to col, posDiag, negDiag and board
+# call backtrack
+# remove from col, posDiag and negDiag. 
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        colSet = set()
+        posDiag = set() # (r + c)
+        negDiag = set() # (r - c)
+        res = []
+        board = [["."] * n for i in range(n)]
+        
+        def backtrack(row):
+            # Base case:
+            if row == n:
+                copy = ["".join(row) for row in board]
+                res.append(copy)
+                return
+            
+            for col in range(n):
+                if col in colSet or (row+col) in posDiag or (row-col) in negDiag:
+                    continue
+                
+                colSet.add(col)
+                posDiag.add(row+col)
+                negDiag.add(row-col)
+                board[row][col] = "Q"
+
+                backtrack(row+1)
+
+                colSet.remove(col)
+                posDiag.remove(row+col)
+                negDiag.remove(row-col)
+                board[row][col] = "."
+        
+        backtrack(0)
+        return res
+```
+
+### Key Concepts:
+- Trick to this one is maintaining 3 sets that represent that that column, positive diagonal and negative diagonal is occupied. 
+- For every position on the board, if we want to add a queen, we want to quickly check if the queen we add will conflict with one of the 3 sets
+- Column is a straight comparison, but for positive and negative diagonal, we can check using row + col and row - col respectively. 
+- This checks if there is a queen already placed on a column or diagonal that intersects the current position. 
+- We use backtracking to populate and unpopulate the board as we try every position recursively. 
+
+### Time and Space Complexity:
+- Time: O(n!), as n increases the number of possible queen positions that need to be checked increases. its slightly less because as queens are added we prune branches that don't need to be checked.
+- Space: O(n), recursion stack if you don't count the board. 
