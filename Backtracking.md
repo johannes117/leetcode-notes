@@ -366,3 +366,66 @@ class Solution:
 - Time: O(n*2^n), where n is the length of the string. This is because there are 2^N number of ways to partition a string, 
 and each partition we have to use O(n) time to check if the substrings are palindromes
 - Space: O(n), due to the height of the recursive callstack
+
+## Letter Combinations of a Phone Number
+You are given a string digits made up of digits from 2 through 9 inclusive.
+
+Each digit (not including 1) is mapped to a set of characters as shown below:
+
+A digit could represent any one of the characters it maps to.
+
+Return all possible letter combinations that digits could represent. You may return the answer in any order.
+
+```python
+# edge case empty list
+# build phone map
+# result and sol lists
+# backtrack function with index and sol
+# basecase is index len of digits. use ''.join()
+# get all possible letters for the current digit
+# try each letter and recurse
+# add letter to sol
+# call backtrack
+# pop
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        if len(digits) == 0:
+            return []
+        
+        phone_map = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz"
+        }
+
+        res, sol = [], []
+
+        def backtrack(index, sol):
+            # Basecase
+            if index == len(digits):
+                res.append(''.join(sol))
+                return
+            
+            letters = phone_map[digits[index]]
+
+            for letter in letters:
+                sol.append(letter)
+                backtrack(index+1, sol)
+                sol.pop()
+
+        
+        backtrack(0, sol)
+        return res
+```
+
+### Key Concepts:
+- Backtracking with a hashmap 
+
+### Time and Space Complexity
+- Time: O(4^n), because each n multiplies by at most 4
+- Space: O(n), height of the callstack
