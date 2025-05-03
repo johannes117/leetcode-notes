@@ -326,3 +326,175 @@ class Solution:
 
 - Time: O(N x M x 4^L), where n and m represent the rows and columns and L represents the length of the word.
 - Space: O(L), where l is the length of the word due to the Recursion stack. We are using in place modification so no additional space for board.
+
+
+
+## Palindrome Partitioning
+Given a string s, split s into substrings where every substring is a palindrome. Return all possible lists of palindromic substrings.
+
+You may return the solution in any order.
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        res, sol = [], []
+
+        def backtrack(i, sol):
+            # Base case: reached the end of the string
+            if i >= len(s):
+                res.append(sol.copy())
+                return 
+            
+            # try all possible substrings
+            for j in range(i+1, len(s)+1):
+                substring = s[i:j]
+                if substring == substring[::-1]:
+                    sol.append(substring)
+                    backtrack(j, sol)
+                    sol.pop() # backtrack
+
+        backtrack(0, sol)
+        return res
+```
+
+### Key Concepts:
+- We are trying to find different partitions instead of permutations. Think of it as slicing the string in place to create substrings. 
+- We want to return a list of substrings that are palindromes (same backwards)
+- Basecase: our index has reached the end of the string. We want to append our current path to the result list
+
+### Time and Space Complexity
+- Time: O(n*2^n), where n is the length of the string. This is because there are 2^N number of ways to partition a string, 
+and each partition we have to use O(n) time to check if the substrings are palindromes
+- Space: O(n), due to the height of the recursive callstack
+
+## Letter Combinations of a Phone Number
+You are given a string digits made up of digits from 2 through 9 inclusive.
+
+Each digit (not including 1) is mapped to a set of characters as shown below:
+
+A digit could represent any one of the characters it maps to.
+
+Return all possible letter combinations that digits could represent. You may return the answer in any order.
+
+```python
+# edge case empty list
+# build phone map
+# result and sol lists
+# backtrack function with index and sol
+# basecase is index len of digits. use ''.join()
+# get all possible letters for the current digit
+# try each letter and recurse
+# add letter to sol
+# call backtrack
+# pop
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        if len(digits) == 0:
+            return []
+        
+        phone_map = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz"
+        }
+
+        res, sol = [], []
+
+        def backtrack(index, sol):
+            # Basecase
+            if index == len(digits):
+                res.append(''.join(sol))
+                return
+            
+            letters = phone_map[digits[index]]
+
+            for letter in letters:
+                sol.append(letter)
+                backtrack(index+1, sol)
+                sol.pop()
+
+        
+        backtrack(0, sol)
+        return res
+```
+
+### Key Concepts:
+- Backtracking with a hashmap 
+
+### Time and Space Complexity
+- Time: O(4^n), because each n multiplies by at most 4
+- Space: O(n), height of the callstack
+
+## N-Queens
+The n-queens puzzle is the problem of placing n queens on an n x n chessboard so that no two queens can attack each other.
+
+A queen in a chessboard can attack horizontally, vertically, and diagonally.
+
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a unique board layout where the queen pieces are placed. 'Q' indicates a queen and '.' indicates an empty space.
+
+You may return the answer in any order.
+
+```python
+# place N queens on an N x N chessboard so that no two queens attach eachother. 
+# 3 sets, col, posDiag(r+c), negDiag(r-c)
+# res list
+# board of "." n * n
+# backtrack function with row as input parameter 
+# basecase: if row equal to n, append a list of row string solutions
+# loop through columns
+# check the 3 sets, if so continue
+# add to col, posDiag, negDiag and board
+# call backtrack
+# remove from col, posDiag and negDiag. 
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        colSet = set()
+        posDiag = set() # (r + c)
+        negDiag = set() # (r - c)
+        res = []
+        board = [["."] * n for i in range(n)]
+        
+        def backtrack(row):
+            # Base case:
+            if row == n:
+                copy = ["".join(row) for row in board]
+                res.append(copy)
+                return
+            
+            for col in range(n):
+                if col in colSet or (row+col) in posDiag or (row-col) in negDiag:
+                    continue
+                
+                colSet.add(col)
+                posDiag.add(row+col)
+                negDiag.add(row-col)
+                board[row][col] = "Q"
+
+                backtrack(row+1)
+
+                colSet.remove(col)
+                posDiag.remove(row+col)
+                negDiag.remove(row-col)
+                board[row][col] = "."
+        
+        backtrack(0)
+        return res
+```
+
+### Key Concepts:
+- Trick to this one is maintaining 3 sets that represent that that column, positive diagonal and negative diagonal is occupied. 
+- For every position on the board, if we want to add a queen, we want to quickly check if the queen we add will conflict with one of the 3 sets
+- Column is a straight comparison, but for positive and negative diagonal, we can check using row + col and row - col respectively. 
+- This checks if there is a queen already placed on a column or diagonal that intersects the current position. 
+- We use backtracking to populate and unpopulate the board as we try every position recursively. 
+
+### Time and Space Complexity:
+- Time: O(n!), as n increases the number of possible queen positions that need to be checked increases. its slightly less because as queens are added we prune branches that don't need to be checked.
+- Space: O(n), recursion stack if you don't count the board. 
