@@ -94,3 +94,106 @@ class Solution:
 ### Time and Space:
 - Time: O(m*n)
 - Space: O(m*n), held in the recursive call stack. 
+
+## Clone Graph
+
+Given a node in a connected undirected graph, return a deep copy of the graph.
+
+Each node in the graph contains an integer value and a list of its neighbors.
+
+class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+The graph is shown in the test cases as an adjacency list. An adjacency list is a mapping of nodes to lists, used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
+
+For simplicity, nodes values are numbered from 1 to n, where n is the total number of nodes in the graph. The index of each node within the adjacency list is the same as the node's value (1-indexed).
+
+The input node will always be the first node in the graph and have 1 as the value.
+
+#### Iterative Solution
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val = 0, neighbors = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+"""
+# return a deep copy of the graph
+# using iterative DFS for practice. 
+# edge case check if node exists
+# initialise starting node, old to new mapping (nodeMap), stack, visited set, and add the starting node to visited. 
+# build nodeMap
+# while stack: pop the node from the stack, add it to the nodeMap.
+# loop through neighbors, if not in visited add to visited and append to stack
+#
+# loop through nodemap, loop through neigbors, create new neighbor and append it to the new_node.neighbors
+# return the nodeMap[start]
+
+class Solution:
+    def cloneGraph(self, node: Optional['Node']) -> Optional['Node']:
+        if not node:
+            return None
+        
+        start = node
+        nodeMap = {}
+        visited = set()
+        visited.add(start)
+        stack = [start]
+
+        while stack:
+            node = stack.pop()
+            nodeMap[node] = Node(val=node.val)
+
+            for nei in node.neighbors:
+                if nei not in visited:
+                    visited.add(nei)
+                    stack.append(nei)
+
+        for old_node, new_node in nodeMap.items():
+            for nei in old_node.neighbors:
+                new_nei = nodeMap[nei]
+                new_node.neighbors.append(new_nei)
+        
+        return nodeMap[start]
+```
+
+#### Recursive Solution
+```python
+class Solution:
+    def cloneGraph(self, node: Optional['Node']) -> Optional['Node']:
+        if not node:
+            return None
+        
+        start = node
+        nodeMap = {}
+        visited = set()
+        visited.add(start)
+
+        def dfs(node):
+            # Create new entry into NodeMap
+            nodeMap[node] = Node(val=node.val)
+
+            for nei in node.neighbors:
+                if nei not in visited:
+                    visited.add(nei)
+                    dfs(nei)
+
+        dfs(start)
+
+        for old_node, new_node in nodeMap.items():
+            for nei in old_node.neighbors:
+                new_nei = nodeMap[nei]
+                new_node.neighbors.append(new_nei)
+        
+        return nodeMap[start]
+```
+
+### Key Concepts:
+- We build a hashmap to store the old and new nodes using DFS
+- Once we have the old to new map, we can iterate through the map and link the neighbors. 
+
+### Time and Space Complexity:
+- Time: O(V + E)
+- Space: O(v)
