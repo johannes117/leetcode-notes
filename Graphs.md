@@ -269,3 +269,72 @@ class Solution:
 ### Time and Space Complexity:
 - Time: O(m*n)
 - Space: O(m*n)
+
+## Rotting Oranges:
+You are given a 2-D matrix grid. Each cell can have one of three possible values:
+
+0 representing an empty cell
+1 representing a fresh fruit
+2 representing a rotten fruit
+Every minute, if a fresh fruit is horizontally or vertically adjacent to a rotten fruit, then the fresh fruit also becomes rotten.
+
+Return the minimum number of minutes that must elapse until there are zero fresh fruits remaining. If this state is impossible within the grid, return -1.
+
+```python
+# Return the minimum number of minutes that must elapse until there are zero fresh oranges remaining. If impossible -1
+# visit every cell in grid, if rotten add to queue, if fresh increment fresh counter
+# edgecase: if fresh 0 return 0
+# initialise minute counter as -1
+# while q, increment minute for each round/level
+# each level popleft and call bfs on each direction
+# basecases: out of bounds, cell not fresh. return
+# replace cell with rotten, decrement fresh count, append to queue
+# return minutes if freshcount is 0, else return -1 
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        FRESH, ROTTEN, EMPTY = 1, 2, 0
+        m, n = len(grid), len(grid[0])
+        q = deque()
+        fresh_count = 0
+
+        for i in range(m):
+           for j in range(n):
+            if grid[i][j] == FRESH:
+                fresh_count += 1
+            elif grid[i][j] == ROTTEN:
+                q.append((i, j))
+        if fresh_count == 0:
+            return 0
+
+        minute_count = -1
+        while q:
+            minute_count += 1
+            round_size = len(q)
+            for _ in range(round_size):
+                i, j = q.popleft()
+                for r, c in [[i+1, j], [i-1, j], [i, j+1], [i, j-1]]:
+                    if 0 <= r < m and 0 <= c < n and grid[r][c] == FRESH:
+                        grid[r][c] = ROTTEN
+                        q.append((r, c))
+                        fresh_count -= 1
+
+        if fresh_count == 0:
+            return minute_count
+        else:
+            return -1
+```
+
+### Key Concepts:
+- We can use BFS to calculate the rotten traversal throughout the grid. 
+- Similar solution to the Walls and Gates problem
+- Maintain a minute count, each level/round we increment the minute count. 
+- We want to first count the number of fresh oranges, and add all of the rotten orange positions to the queue. 
+- For each level of the queue, we want to take the length of the queue at the beginning of the round and process only those number of items in the queue. 
+- This way that every item that is added during this round will be processed in the next round. Hence will be processed in the next minute. 
+- For each item in the queue, we want to check if its a valid cell, and whether its fresh, if so we add it to the queue, set it to rotten and decrememnt the fresh count. 
+- We want to return the minute count if the fresh count reached 0, else return -1. 
+
+
+# Time and Space Complexity
+- Time: O(m*n)
+- Space: O(m*n)
