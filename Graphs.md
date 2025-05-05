@@ -197,3 +197,75 @@ class Solution:
 ### Time and Space Complexity:
 - Time: O(V + E)
 - Space: O(v)
+
+
+## Islands and Treasure (Walls and Gates)
+You are given a 
+m
+×
+n
+m×n 2D grid initialized with these three possible values:
+
+-1 - A water cell that can not be traversed.
+0 - A treasure chest.
+INF - A land cell that can be traversed. We use the integer 2^31 - 1 = 2147483647 to represent INF.
+Fill each land cell with the distance to its nearest treasure chest. If a land cell cannot reach a treasure chest than the value should remain INF.
+
+Assume the grid can only be traversed up, down, left, or right.
+
+Modify the grid in-place.
+
+```python
+# modify the grid in place with the distances to the nearest treasure (gate)
+# we perform a BFS from each gate simultaneously, and set the distance from each gate in each land cell as we traverse. 
+# Basecases: Out of bounds, visited and water cell (-1). We add the gates to visited so we dont have to check these. 
+# We initialise the queue with all of the gates, loop through the grid and append each gate to the queue and mark as visited. 
+# maintain a distance variable, loop while queue exists
+# loop through current queue length
+# popleft and then set the cell as the current distance variable (for the gates this will be 0, and they are processed in the first loop)
+# we want to add each cell in all 4 directions to the queue, call the helper function with the base cases. add to visited and queue
+# once we are finished with a single level, increase the distance. 
+class Solution:
+    def islandsAndTreasure(self, grid: List[List[int]]) -> None:
+        ROWS, COLS = len(grid), len(grid[0])
+        q = deque()
+        visited = set()
+
+        def addRow(r, c):
+            if r < 0 or c < 0 or r >= ROWS or c >= COLS or (r,c) in visited or grid[r][c] == -1:
+                return
+            q.append([r,c])
+            visited.add((r,c))
+        
+        # Add Gates/Treasure to queue
+        for r in range(ROWS):
+            for c in range(COLS):
+                if grid[r][c] == 0:
+                    q.append([r,c])
+                    visited.add((r,c))
+
+        # Process Queue
+        distance = 0
+        while q:
+            for i in range(len(q)):
+                r, c = q.popleft()
+                grid[r][c] = distance
+                addRow(r+1, c)
+                addRow(r-1, c)
+                addRow(r, c+1)
+                addRow(r, c-1)
+            distance += 1
+```
+
+### Key Concepts:
+- To solve this problem we must do a simultaneous BFS on each gate starting position. 
+- We can achieve this using a queue, and by incrementing the distance each time we process a queue "level"
+- Base cases are: Out of Bounds, Visited or Water/Wall
+- We check if the cell is valid, if it is its added to the queue to be processed in the next level. 
+- Once each cells neighbors have been added to the queue, and their distance updated, we continue to the next level. 
+- Eventually each BFS path will reach a basecase and return, and all cell distances will have been updated. 
+
+
+### Time and Space Complexity:
+- Time: O(m*n)
+- Space: O(m*n)
