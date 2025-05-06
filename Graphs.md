@@ -48,8 +48,8 @@ class Solution:
 
 ### Time and Space Complexity:
 
-- Time: O(m*n)
-- Space: O(m*n), height of the callstack
+- Time: O(m\*n)
+- Space: O(m\*n), height of the callstack
 
 Max Area of Island
 You are given a matrix grid where grid[i] is either a 0 (representing water) or 1 (representing land).
@@ -61,7 +61,7 @@ The area of an island is defined as the number of cells within the island.
 Return the maximum area of an island in grid. If no island exists, return 0.
 
 ```python
-# m * n binary matrix grid where grid[i] is either 0 or 1 representing land. return the maximum area of an island. 
+# m * n binary matrix grid where grid[i] is either 0 or 1 representing land. return the maximum area of an island.
 # visit every starting position and call dfs on positions that are 1
 # dfs function with i and j as input (row and column)
 # base case: out of bounds and position is not equal to 1. return 0
@@ -87,13 +87,15 @@ class Solution:
 ```
 
 ### Key Concepts:
-- Similar to the Number of islands solution except we maintain a max area variable. 
+
+- Similar to the Number of islands solution except we maintain a max area variable.
 - Basecases: Out of bounds and position is not land
-- If we find a position that is land, we turn it into water and then return 1 + the recursive call in all 4 directions from that position. 
+- If we find a position that is land, we turn it into water and then return 1 + the recursive call in all 4 directions from that position.
 
 ### Time and Space:
-- Time: O(m*n)
-- Space: O(m*n), held in the recursive call stack. 
+
+- Time: O(m\*n)
+- Space: O(m\*n), held in the recursive call stack.
 
 ## Clone Graph
 
@@ -102,8 +104,8 @@ Given a node in a connected undirected graph, return a deep copy of the graph.
 Each node in the graph contains an integer value and a list of its neighbors.
 
 class Node {
-    public int val;
-    public List<Node> neighbors;
+public int val;
+public List<Node> neighbors;
 }
 The graph is shown in the test cases as an adjacency list. An adjacency list is a mapping of nodes to lists, used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
 
@@ -112,6 +114,7 @@ For simplicity, nodes values are numbered from 1 to n, where n is the total numb
 The input node will always be the first node in the graph and have 1 as the value.
 
 #### Iterative Solution
+
 ```python
 """
 # Definition for a Node.
@@ -121,9 +124,9 @@ class Node:
         self.neighbors = neighbors if neighbors is not None else []
 """
 # return a deep copy of the graph
-# using iterative DFS for practice. 
+# using iterative DFS for practice.
 # edge case check if node exists
-# initialise starting node, old to new mapping (nodeMap), stack, visited set, and add the starting node to visited. 
+# initialise starting node, old to new mapping (nodeMap), stack, visited set, and add the starting node to visited.
 # build nodeMap
 # while stack: pop the node from the stack, add it to the nodeMap.
 # loop through neighbors, if not in visited add to visited and append to stack
@@ -135,7 +138,7 @@ class Solution:
     def cloneGraph(self, node: Optional['Node']) -> Optional['Node']:
         if not node:
             return None
-        
+
         start = node
         nodeMap = {}
         visited = set()
@@ -155,17 +158,18 @@ class Solution:
             for nei in old_node.neighbors:
                 new_nei = nodeMap[nei]
                 new_node.neighbors.append(new_nei)
-        
+
         return nodeMap[start]
 ```
 
 #### Recursive Solution
+
 ```python
 class Solution:
     def cloneGraph(self, node: Optional['Node']) -> Optional['Node']:
         if not node:
             return None
-        
+
         start = node
         nodeMap = {}
         visited = set()
@@ -186,21 +190,23 @@ class Solution:
             for nei in old_node.neighbors:
                 new_nei = nodeMap[nei]
                 new_node.neighbors.append(new_nei)
-        
+
         return nodeMap[start]
 ```
 
 ### Key Concepts:
+
 - We build a hashmap to store the old and new nodes using DFS
-- Once we have the old to new map, we can iterate through the map and link the neighbors. 
+- Once we have the old to new map, we can iterate through the map and link the neighbors.
 
 ### Time and Space Complexity:
+
 - Time: O(V + E)
 - Space: O(v)
 
-
 ## Islands and Treasure (Walls and Gates)
-You are given a 
+
+You are given a
 m
 ×
 n
@@ -217,14 +223,14 @@ Modify the grid in-place.
 
 ```python
 # modify the grid in place with the distances to the nearest treasure (gate)
-# we perform a BFS from each gate simultaneously, and set the distance from each gate in each land cell as we traverse. 
-# Basecases: Out of bounds, visited and water cell (-1). We add the gates to visited so we dont have to check these. 
-# We initialise the queue with all of the gates, loop through the grid and append each gate to the queue and mark as visited. 
+# we perform a BFS from each gate simultaneously, and set the distance from each gate in each land cell as we traverse.
+# Basecases: Out of bounds, visited and water cell (-1). We add the gates to visited so we dont have to check these.
+# We initialise the queue with all of the gates, loop through the grid and append each gate to the queue and mark as visited.
 # maintain a distance variable, loop while queue exists
 # loop through current queue length
 # popleft and then set the cell as the current distance variable (for the gates this will be 0, and they are processed in the first loop)
 # we want to add each cell in all 4 directions to the queue, call the helper function with the base cases. add to visited and queue
-# once we are finished with a single level, increase the distance. 
+# once we are finished with a single level, increase the distance.
 class Solution:
     def islandsAndTreasure(self, grid: List[List[int]]) -> None:
         ROWS, COLS = len(grid), len(grid[0])
@@ -236,7 +242,7 @@ class Solution:
                 return
             q.append([r,c])
             visited.add((r,c))
-        
+
         # Add Gates/Treasure to queue
         for r in range(ROWS):
             for c in range(COLS):
@@ -258,19 +264,21 @@ class Solution:
 ```
 
 ### Key Concepts:
-- To solve this problem we must do a simultaneous BFS on each gate starting position. 
+
+- To solve this problem we must do a simultaneous BFS on each gate starting position.
 - We can achieve this using a queue, and by incrementing the distance each time we process a queue "level"
 - Base cases are: Out of Bounds, Visited or Water/Wall
-- We check if the cell is valid, if it is its added to the queue to be processed in the next level. 
-- Once each cells neighbors have been added to the queue, and their distance updated, we continue to the next level. 
-- Eventually each BFS path will reach a basecase and return, and all cell distances will have been updated. 
-
+- We check if the cell is valid, if it is its added to the queue to be processed in the next level.
+- Once each cells neighbors have been added to the queue, and their distance updated, we continue to the next level.
+- Eventually each BFS path will reach a basecase and return, and all cell distances will have been updated.
 
 ### Time and Space Complexity:
-- Time: O(m*n)
-- Space: O(m*n)
+
+- Time: O(m\*n)
+- Space: O(m\*n)
 
 ## Rotting Oranges:
+
 You are given a 2-D matrix grid. Each cell can have one of three possible values:
 
 0 representing an empty cell
@@ -289,7 +297,7 @@ Return the minimum number of minutes that must elapse until there are zero fresh
 # each level popleft and call bfs on each direction
 # basecases: out of bounds, cell not fresh. return
 # replace cell with rotten, decrement fresh count, append to queue
-# return minutes if freshcount is 0, else return -1 
+# return minutes if freshcount is 0, else return -1
 class Solution:
     def orangesRotting(self, grid: List[List[int]]) -> int:
         FRESH, ROTTEN, EMPTY = 1, 2, 0
@@ -325,16 +333,91 @@ class Solution:
 ```
 
 ### Key Concepts:
-- We can use BFS to calculate the rotten traversal throughout the grid. 
-- Similar solution to the Walls and Gates problem
-- Maintain a minute count, each level/round we increment the minute count. 
-- We want to first count the number of fresh oranges, and add all of the rotten orange positions to the queue. 
-- For each level of the queue, we want to take the length of the queue at the beginning of the round and process only those number of items in the queue. 
-- This way that every item that is added during this round will be processed in the next round. Hence will be processed in the next minute. 
-- For each item in the queue, we want to check if its a valid cell, and whether its fresh, if so we add it to the queue, set it to rotten and decrememnt the fresh count. 
-- We want to return the minute count if the fresh count reached 0, else return -1. 
 
+- We can use BFS to calculate the rotten traversal throughout the grid.
+- Similar solution to the Walls and Gates problem
+- Maintain a minute count, each level/round we increment the minute count.
+- We want to first count the number of fresh oranges, and add all of the rotten orange positions to the queue.
+- For each level of the queue, we want to take the length of the queue at the beginning of the round and process only those number of items in the queue.
+- This way that every item that is added during this round will be processed in the next round. Hence will be processed in the next minute.
+- For each item in the queue, we want to check if its a valid cell, and whether its fresh, if so we add it to the queue, set it to rotten and decrememnt the fresh count.
+- We want to return the minute count if the fresh count reached 0, else return -1.
 
 # Time and Space Complexity
-- Time: O(m*n)
-- Space: O(m*n)
+
+- Time: O(m\*n)
+- Space: O(m\*n)
+
+## Pacific Atlantic Water Flow
+
+You are given a rectangular island heights where heights[r][c] represents the height above sea level of the cell at coordinate (r, c).
+
+The islands borders the Pacific Ocean from the top and left sides, and borders the Atlantic Ocean from the bottom and right sides.
+
+Water can flow in four directions (up, down, left, or right) from a cell to a neighboring cell with height equal or lower. Water can also flow into the ocean from cells adjacent to the ocean.
+
+Find all cells where water can flow from that cell to both the Pacific and Atlantic oceans. Return it as a 2D list where each element is a list [r, c] representing the row and column of the cell. You may return the answer in any order.
+
+```python
+# m * n martrix heights. Find all cells where water can flow to both Pacific and Atlantic.
+# return a 2d list
+# define a queue and seen set for pacific and atlantic, define m and n
+# Add the 1st row, 1st col, last row, last col to the queue and seen sets for atl and pac
+# define a getCoords helper function with queue and seen as parameters
+# initialise a new coords set
+# while queue, we want to popleft from the queue.
+# loop through all 4 directions (offset)
+# conditions: inbounds, height of neighbor is bigger than current element, and neigbor is not in seen
+# conditions met: add to seen and queue
+# call getCoords for both atl and pac, return intersection of seen sets.
+class Solution:
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+        pac_queue, pac_seen = deque(), set()
+        atl_queue, atl_seen = deque(), set()
+        m, n = len(heights), len(heights[0])
+
+        # Add First Row Pac
+        for j in range(n):
+            pac_queue.append((0, j))
+            pac_seen.add((0, j))
+
+        # Add First Column to Pac
+        for i in range(1, m):
+            pac_queue.append((i, 0))
+            pac_seen.add((i, 0))
+
+        # Add Last Row Atl
+        for i in range(m):
+            atl_queue.append((i, n - 1))
+            atl_seen.add((i, n - 1))
+
+        # Add Last Col to Atl
+        for j in range(n - 1):
+            atl_queue.append((m - 1, j))
+            atl_seen.add((m - 1, j))
+
+        def getCoords(que, seen):
+            while que:
+                i, j = que.popleft()
+                for i_off, j_off in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
+                    r, c = i + i_off, j + j_off
+                    if 0 <= r < m and 0 <= c < n and heights[r][c] >= heights[i][j] and (r, c) not in seen:
+                        que.append((r, c))
+                        seen.add((r, c))
+
+        getCoords(pac_queue, pac_seen)
+        getCoords(atl_queue, atl_seen)
+        return list(pac_seen.intersection(atl_seen))
+```
+
+### Key Concepts:
+
+- The first row, and first column will always be able to flow into the pacific
+- The last row and last column will always be able to flow into the atlantic.
+- Therefore we must perform a BFS search from these positions to find adjacent land that can flow into them (higher or same).
+- We want to figure out all cells that can flow into Pacific, and all Cells that can flow into Atlantic and then take the intersection of the 2.
+
+### Time and Space:
+
+- Time: O(m\*n)
+- Space: O(m\*n)
