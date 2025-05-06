@@ -421,3 +421,99 @@ class Solution:
 
 - Time: O(m\*n)
 - Space: O(m\*n)
+
+## Surrounded Regions
+You are given a 2-D matrix board containing 'X' and 'O' characters.
+
+If a continous, four-directionally connected group of 'O's is surrounded by 'X's, it is considered to be surrounded.
+
+Change all surrounded regions of 'O's to 'X's and do so in-place by modifying the input board.
+
+```python
+# You are given a 2D grid mage of water (X) and islands of land (O). Find all islands that don't touch the border (ignoring diagonal) and sink them into water
+# Scan the borders for land and use DFS to "shield" those islands )set O to T. Next sink the unshielded islands (sset ) to X). Finally remove the shields (Set T to O)
+# 1. Capture unsurrounded regions (O -> T)
+# 2. Capture surrounded regions (O -> X)
+# 3. Uncapture unsurrounded regions (T -> O)
+# DFS function with basecases: Out of bounds or position is not "O"
+# If not basecase: change position to a "T", call DFS on all 4 directions. 
+# To iterate through border positions use condition, if position is "O" and row is 0 or ROWS - 1 or column is 0 or cols - 1
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        ROWS, COLS = len(board), len(board[0])
+
+        def dfs(r, c):
+            # Base case: Out of bounds or not an O
+            if r < 0 or c < 0 or r == ROWS or c == COLS or board[r][c] != "O":
+                return
+            board[r][c] = "T"
+            dfs(r-1, c)
+            dfs(r+1, c)
+            dfs(r, c-1)
+            dfs(r, c+1)
+        
+        # Capture unsurrounded regions (DFS)
+        for r in range(ROWS):
+            for c in range(COLS):
+                if (board[r][c] == "O" and (r in [0, ROWS-1] or c in [0, COLS-1])):
+                    dfs(r, c)
+
+        # Capture surrounded regions
+        for r in range(ROWS):
+            for c in range(COLS):
+                if board[r][c] == "O":
+                    board[r][c] = "X"
+
+        # Uncapture unsurrounded regions
+        for r in range(ROWS):
+            for c in range(COLS):
+                if board[r][c] == "T":
+                    board[r][c] = "O"
+```
+
+Slightly Optimised solution:
+```python
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        ROWS, COLS = len(board), len(board[0])
+
+        def capture(r, c):
+            if (r < 0 or c < 0 or r == ROWS or 
+                c == COLS or board[r][c] != "O"
+            ):
+                return
+            board[r][c] = "T"
+            capture(r + 1, c)
+            capture(r - 1, c)
+            capture(r, c + 1)
+            capture(r, c - 1)
+
+        for r in range(ROWS):
+            if board[r][0] == "O":
+                capture(r, 0)
+            if board[r][COLS - 1] == "O":
+                capture(r, COLS - 1)
+        
+        for c in range(COLS):
+            if board[0][c] == "O":
+                capture(0, c)
+            if board[ROWS - 1][c] == "O":
+                capture(ROWS - 1, c)
+
+        for r in range(ROWS):
+            for c in range(COLS):
+                if board[r][c] == "O":
+                    board[r][c] = "X"
+                elif board[r][c] == "T":
+                    board[r][c] = "O"
+```
+
+### Key Concepts:
+- We want to "shield" islands that are touching the boarders, this means we need to iterate through all of the border positions and perform a DFS on all of the "O" positions. 
+- When performing DFS on an "O" border position, we will effectively "shield" the entire connected island by turning them into "T" strings. 
+- Later once we have shielded the islands touching the borders, we iterate through the grid and turn all remaining "O" cells into "X"s. Effectively "sinking" the islands. 
+- Once we have sunken all surrounded islands, we want to unshield the "T" cells and turn them back into "O" cells. 
+
+### Time and Space Complexity:
+- Time: O(m*n)
+- Space: O(m*n)
