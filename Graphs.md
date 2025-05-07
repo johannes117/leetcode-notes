@@ -517,3 +517,131 @@ class Solution:
 ### Time and Space Complexity:
 - Time: O(m*n)
 - Space: O(m*n)
+
+
+## Course Schedule
+You are given an array prerequisites where prerequisites[i] = [a, b] indicates that you must take course b first if you want to take course a.
+
+The pair [0, 1], indicates that must take course 1 before taking course 0.
+
+There are a total of numCourses courses you are required to take, labeled from 0 to numCourses - 1.
+
+Return true if it is possible to finish all courses, otherwise return false.
+
+```python
+# If we detect a cycle in the graph return False, else return True
+# We can use an Adjacency List to handle the graph: a Dictionary where each node is a key, and each key can have multiple neighbors as values. g ={ 1: [0], 2: [1, 3]}
+# We can build the adjacency list by looping through a,b in the input list and then appending the b value to 'a' key in the dictionary. 
+# set constants for UNVISITED, VISITING, VISITED. create a states array of UNVISITED values the same length as the numCourses
+# dfs helper: node as parameter, retrieve state from states list using node, 
+# if visited, return true, if visiting, we have detected a cycle return false
+# otherwise we want to set the current node in the states list as visiting. 
+# loop through each neighbor in the node in the adj list and perform dfs on the neighbor nodes. 
+# set the current node in the states list as visiting.
+# return True (we didnt detect a cycle)
+# loop throuh numCourses, and call dfs
+# return true if we make it to the end. 
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        g = defaultdict(list)
+        for a, b in prerequisites:
+            g[a].append(b)
+        
+        UNVISITED, VISITING, VISITED = 0, 1, 2
+        states = [UNVISITED] * numCourses
+
+        def dfs(node):
+            state = states[node]
+            if state == VISITED:
+                return True
+            elif state == VISITING:
+                return False
+            
+            states[node] = VISITING
+
+            for nei in g[node]:
+                if not dfs(nei):
+                    return False
+            
+            states[node] = VISITED
+            return True
+
+        for i in range(numCourses):
+            if not dfs(i):
+                return False
+        
+        return True
+```
+
+### Key Concepts:
+- Multiple new concepts introduced in this question.
+- Adjacency Lists: is a collection of lists representing a graph, where each node stores a list of its adjacent nodes. 
+- Example implementation: `g = defaultdict(list)` where we can add edges with g[source].append(destination)
+- Cycle Detection: Uses a three-state tracking system, UNVISITED (0), VISITING (1), VISITED(2)
+- If we encounter VISITING node during traversal, we've found a cycle
+- DFS for Cycle detection:
+- Base case1: If node is VISITED: Return True (no cycle from this path)
+= Base case 2: If node is VISITING: Return False (cycle detected)
+
+### Time and Space:
+- Time: O(N + E)
+- Time: O(N + E)
+
+## Course Schedule II
+You are given an array prerequisites where prerequisites[i] = [a, b] indicates that you must take course b first if you want to take course a.
+
+For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+There are a total of numCourses courses you are required to take, labeled from 0 to numCourses - 1.
+
+Return a valid ordering of courses you can take to finish all courses. If there are many valid answers, return any of them. If it's not possible to finish all courses, return an empty array.
+
+```python
+# return a list of nodes representing the order to take the courses in if there are no cycles
+# build up the graph
+# define constants and variables
+# define dfs helper function
+# basecases: VISITING (false), VISITED (true)
+# set current to visiting, and perform DFS on the neigbors (return false if cycle found)
+# set to visited and append to order, then return true
+# loop through numCourses and call dfs, if cycle return []
+# return order
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        order = []
+        g = defaultdict(list)
+        for a, b in prerequisites:
+            g[a].append(b)
+        
+        UNVISITED, VISITING, VISITED = 0,1,2
+        states = [UNVISITED] * numCourses
+
+        def dfs(i):
+            state = states[i]
+            if state == VISITING:
+                return False
+            elif state == VISITED:
+                return True
+            
+            states[i] = VISITING
+
+            for nei in g[i]:
+                if not dfs(nei):
+                    return False
+            
+            states[i] = VISITED
+            order.append(i)
+            return True
+        
+        for i in range(numCourses):
+            if not dfs(i):
+                return []
+        
+        return order
+```
+
+### Key Concepts:
+- Same as Course Schedule 1, but we need append the course/node to an order list and return it at the end
+
+### Time and Space Complexity:
+- Time: O(N + E)
+- Space: O(N + E)
