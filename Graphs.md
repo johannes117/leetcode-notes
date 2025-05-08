@@ -645,3 +645,54 @@ class Solution:
 ### Time and Space Complexity:
 - Time: O(N + E)
 - Space: O(N + E)
+
+## Graph Valid Tree
+Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
+
+```python
+# Given n nodes, labeled from 0 to n - 1, and a list of undirected edges, check whether these edges make up a valid tree
+# edge case, if not n return true
+# build an adjacency list. unpack edgges and then append them to the adjacency list
+# initialise a visit set
+# dfs helper: 
+# early return if node is in visited set
+# add the node to visited set
+# loop through neibors, if neighbor is prev, continue
+# if not dfs return false
+# return true if none of the neibors returned false
+# outside: return dfs starting at 0 node, with prev value of -1 and if the visited set is the same len as n. 
+class Solution:
+    def validTree(self, n: int, edges: List[List[int]]) -> bool:
+        if not n:
+            return False
+        adj = {i:[] for i in range(n)}
+        for n1, n2 in edges:
+            adj[n1].append(n2)
+            adj[n2].append(n1)
+
+        visited = set()
+
+        def dfs(node, prev):
+            if node in visited:
+                return False
+            
+            visited.add(node)
+            for nei in adj[node]:
+                if nei == prev:
+                    continue
+                if not dfs(nei, node):
+                    return False
+            return True
+        
+        return dfs(0, -1) and n == len(visited)
+```
+
+### Key Concepts:
+- A Valid Tree cannot contain any cycles, and all nodes must be connected. 
+- To check for cycles, we use a visited set when doing DFS. We use a Prev variable to track the last visted node to exclude it from the visited check
+- To check that all nodes are connected, we can check if the visited set is the same length as n (number of nodes). This means all nodes were visited and have edges. 
+- We use an adjacency list to structure this graph. 
+
+### Time and Space Complexity
+- Time: O(V + E)
+- Space: O(V + E)
