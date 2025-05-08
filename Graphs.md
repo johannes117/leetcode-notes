@@ -696,3 +696,60 @@ class Solution:
 ### Time and Space Complexity
 - Time: O(V + E)
 - Space: O(V + E)
+
+## Number of Connected Components in an Undirected Graph
+There is an undirected graph with n nodes. There is also an edges array, where edges[i] = [a, b] means that there is an edge between node a and node b in the graph.
+
+The nodes are numbered from 0 to n - 1.
+
+Return the total number of connected components in that graph.
+
+```python
+# Return the total number of connected components in the graph
+# Edgecase if n == 1 return 1
+# initialise a components variable and build the graph, initialise a visited set
+# dfs helper with node as a parameter
+# loop through neighbors of node, if neighbor is not in visited, add to visited and call dfs on that neighbor
+# outside: loop through nodes in graph, if in visited continue, else add to visited, increment components and call dfs
+# return components. 
+class Solution:
+    def countComponents(self, n: int, edges: List[List[int]]) -> int:
+        if n == 1:
+            return 1
+        
+        graph = { node:[] for node in range(n)}
+        for node1, node2 in edges:
+            graph[node1].append(node2)
+            graph[node2].append(node1)
+        visited = set()
+        components = 0
+
+        def dfs(node):
+            for nei in graph[node]:
+                if nei in visited:
+                    continue
+                else:
+                    visited.add(nei)
+                    dfs(nei)
+        
+        for node in graph:
+            if node in visited:
+                continue
+            else:
+                visited.add(node)
+                components += 1
+                dfs(node)
+        
+        return components
+```
+
+### Key Concepts
+- Build the Graph using an Adjacency List
+- Maintain a Visited Set and a component count
+- Call DFS on every node in the graph if not in visited, increment component counter
+- In the DFS helper function, we want to call dfs on the neighbor nodes if not in visited. 
+
+
+### Time and Space Complexity:
+- Time: O(V + E)
+- Space: O(V + E)
