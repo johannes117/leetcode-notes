@@ -753,3 +753,55 @@ class Solution:
 ### Time and Space Complexity:
 - Time: O(V + E)
 - Space: O(V + E)
+
+## Redundant Connection
+You are given a connected undirected graph with n nodes labeled from 1 to n. Initially, it contained no cycles and consisted of n-1 edges.
+
+We have now added one additional edge to the graph. The edge has two different vertices chosen from 1 to n, and was not an edge that previously existed in the graph.
+
+The graph is represented as an array edges of length n where edges[i] = [ai, bi] represents an edge between nodes ai and bi in the graph.
+
+Return an edge that can be removed so that the graph is still a connected non-cyclical graph. If there are multiple answers, return the edge that appears last in the input edges.
+
+```python
+# Identify an Edge that can be removed resulting in a tree
+# Trees: Connected, Does not have cycles. 
+# We can use Union Find (Disjoint Set) to solve the proble,. which helps us detect cycles in an undirected graph.
+# set n equal to the length of the edges list
+# initialise parent array as a range if n + 1
+# find function: find the root of x with path compression
+# if x is not its own parent, call find again. If it is its own parent, return 
+# union function: two inputs x and y, Union by merging the roots
+# find the root of x and y, and set the parent of y to parent of x. 
+# for nodes in edges, ,if both nodes are already connected, this edge creates a cycle. 
+# call find on both nodes, if they are equal, return the edge
+# return an empty list as an edge case
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        n = len(edges)
+        parent = list(range(n+1))
+
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            parent[find(x)] = find(y)
+        
+        for u, v in edges:
+            if find(u) == find(v):
+                return [u,v]
+            union(u, v)
+
+        return []
+```
+
+### Key Concepts:
+- Union Find: A data structure which maintains a representive node which is a parent of all other nodes in the collection. 
+- We can detect a cycle if the edge we are adding have two nodes with the same parent.
+- Once we find the edge that caused the cycle we simply return that edge. 
+
+### Time and Space:
+- Time: O(V + E)
+- Space: O(n)
