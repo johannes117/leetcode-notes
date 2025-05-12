@@ -805,3 +805,68 @@ class Solution:
 ### Time and Space:
 - Time: O(V + E)
 - Space: O(n)
+
+## Word Ladder
+You are given two words, beginWord and endWord, and also a list of words wordList. All of the given words are of the same length, consisting of lowercase English letters, and are all distinct.
+
+Your goal is to transform beginWord into endWord by following the rules:
+
+You may transform beginWord to any word within wordList, provided that at exactly one position the words have a different character, and the rest of the positions have the same characters.
+You may repeat the previous step with the new word that you obtain, and you may do this as many times as needed.
+Return the minimum number of words within the transformation sequence needed to obtain the endWord, or 0 if no such sequence exists.
+
+```python
+# Beginning word, end word, create a sequence where every adjacent pair of words can only differ by 1 character. 
+# return the shortest sequence
+# We can use array slicing to compute the wildcard pattern: word[:index] + '*' + word[index+1:]
+# edgecase: check if endword not in wordlist return 0
+# Pre-compute all paterns for each word. Using a defaultdict(list) adjacency list, we want to calc the pattern, and append the current word to that pattern. 
+# BFS setup: queue [(beginWord, 1)], visited set
+# while loop: 
+# unpack from queue, if endWord return steps
+# Find all words that share a pattern with current word. computeWildcard, loop through neighbors, check visited, add to visited, append to queue (increment steps)
+# return 0 if all else fails. 
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        def computeWildcard(word, index):
+            return word[:index] + "*" + word[index+1:]
+        
+        if endWord not in wordList:
+            return 0
+        
+        # Build pattern Adjacency List
+        patternDict = defaultdict(list)
+        for word in wordList:
+            for c in range(len(word)):
+                pattern = computeWildcard(word, c)
+                patternDict[pattern].append(word)
+        
+        # BFS Setup
+        queue = deque([(beginWord, 1)])
+        visited = set([beginWord])
+
+        while queue:
+            currentWord, steps = queue.popleft()
+
+            if currentWord == endWord:
+                return steps
+
+            for c in range(len(currentWord)):
+                pattern = computeWildcard(currentWord, c)
+                for nei in patternDict[pattern]:
+                    if nei not in visited:
+                        visited.add(nei)
+                        queue.append([nei, steps+1])
+        
+        return 0
+```
+
+### Key Concepts:
+- Array Slicing wildcard calculation: word[:j] + "*" + word[i+j:]
+- We first build an adjacency list that uses the wildcards as keys, and each wildcard has a list of words that they match. 
+- This pattern matching adjacency list allows us to perform a BFS by adding all of the neighboring words to the queue. 
+- We want to find the shortest path, so the first BFS to get there wins. 
+
+### Time and Space;
+- Time: O(m^2 * n) for preprocessing + O(m * n) for BFS
+- Space: O(m * n)
