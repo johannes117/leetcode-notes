@@ -57,3 +57,70 @@ class Solution:
 ### Time and Space Complexity 
 - Time: O(E log V), where E is the number of edges and V is the number of vertices. The while loop runs ar most E times, and each heappush and heappop operation on a heap of up to v takes O(log V) time. 
 - Space: O(V + E), where V is for the min_times dict, and the heap, and E is for the graph adjacency list. 
+
+
+## Reconstruct Flight Path
+You are given a list of flight tickets tickets where tickets[i] = [from_i, to_i] represent the source airport and the destination airport.
+
+Each from_i and to_i consists of three uppercase English letters.
+
+Reconstruct the itinerary in order and return it.
+
+All of the tickets belong to someone who originally departed from "JFK". Your objective is to reconstruct the flight path that this person took, assuming each ticket was used exactly once.
+
+If there are multiple valid flight paths, return the lexicographically smallest one.
+
+For example, the itinerary ["JFK", "SEA"] has a smaller lexical order than ["JFK", "SFO"].
+You may assume all the tickets form at least one valid flight path.
+
+```python
+# Reconstruct the itinerary in lexicographical (alphabetical) order. 
+# build adjacency list (hint: reverse sorted order to force the lexicographical ordeR)
+# initialise a stack with the starting node "JFK"
+# initialise an empty itinerary list
+# while stack:
+# pop the neighbours of the node in the graph at the top of the stack to the stack using a while loop. 
+# pop and append the node at the top of the stack to the itinerary (we are done with it)
+# return a reversed itinerary. 
+class Solution:
+    def findItinerary(self, tickets: List[List[str]]) -> List[str]:
+        graph = defaultdict(list)
+
+        for src, dest in sorted(tickets, reverse=True):
+            graph[src].append(dest)
+        
+        stack = ["JFK"] # starting node
+        itinerary = []
+
+        while stack:
+            # While the node at the top of the stack has neighbors (destination airports)
+            while graph[stack[-1]]:
+                stack.append(graph[stack[-1]].pop()) # pop a neighbor from the node at the top of the stack and append it to the stack. 
+            itinerary.append(stack.pop())
+        
+        return list(reversed(itinerary))
+```
+
+### Key Concepts:
+- To visit the nodes in lexicographical (alphabetical) order, we need to reverse sort the tickets array
+- Why Reverse?
+    - When you build an adjacency list, you store the destinations for each source airport.
+    - During traversal, we pop destinations from the adjacency list. 
+    - Popping from a list removes the last element, so to geth the smallest (lexicographically first) destination first, you need to store the destinations in reverse sorted order. 
+- Why reverse at the end?
+    - This algorithm is a form of Hierholzer's algorithm for finding an Eularian path. 
+    - The path is constructed in reverse order because you append nodes to the itinerary only after you have visited all their neighbors. 
+    So, the itinerary list you build is actually the reverse of the final path you want. 
+    To get the correct order, you reverse the itinerary before returning it. 
+
+### Time and Space:
+- Time:
+1. Building the graph:
+    - Sorting the tickets takes O(n log n)
+    - Inserting each into the adjacency list takes O(n)
+2. DFS traversal
+    - Each edge is visited exactly once when popped from the adjacency list
+    - each node (airport) is pushed and popped from the stack at most once per edge
+    - So the DFS travesal takes O(n)
+Total: O(n log n)
+Space: O(n)
