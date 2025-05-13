@@ -184,3 +184,62 @@ class Solution:
 ### Time and Space:
 - Time: O(n^2 log(n))
 - Space: O(n^2)
+
+## Swim in Rising Water
+You are given a square 2-D matrix of distinct integers grid where each integer grid[i][j] represents the elevation at position (i, j).
+
+Rain starts to fall at time = 0, which causes the water level to rise. At time t, the water level across the entire grid is t.
+
+You may swim either horizontally or vertically in the grid between two adjacent squares if the original elevation of both squares is less than or equal to the water level at time t.
+
+Starting from the top left square (0, 0), return the minimum amount of time it will take until it is possible to reach the bottom right square (n - 1, n - 1).
+
+```python
+# return the minimum time it will take until its possible to reach the bottom right square (minimum height). 
+# Using a modified Dijkstra's Algorithm with a min_heap (priority queue)
+# Setup: n, heap (max height so far, row, col), visited set, directions list
+# while heap:
+# pop and unpack from heap
+# if we've reached the bottom right cell, return max_height (n-1, n-1)
+# check all adjacent cells
+# Check if the new position is valid (in bounds) and not visited: 
+# The time needed is the maximum of the current time and the height of the new cell. 
+# push new max height onto heap with new row and col
+# add new row and col to visited. 
+class Solution:
+    def swimInWater(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        # (max height so far, row, col)
+        heap = [(grid[0][0], 0, 0)]
+        visited = set()
+        directions = [[1,0],[-1,0],[0,1],[0,-1]]
+
+        while heap:
+            max_height, row, col = heapq.heappop(heap)
+
+            if row == n-1 and col == n-1:
+                return max_height
+            
+            for dr, dc in directions:
+                new_row, new_col = row + dr, col + dc
+
+                if 0 <= new_row < n and 0 <= new_col < n and (new_row, new_col) not in visited:
+                    new_max_height = max(max_height, grid[new_row][new_col])
+                    heapq.heappush(heap, (new_max_height, new_row, new_col))
+                    visited.add((new_row, new_col))
+        
+        return -1
+```
+
+### Key Concepts:
+- We use a modified version of Dijkstras algorithm using a min heap (priority queue)
+- Each iteration we pop from the heap, and check if we are at the destination cell. If so we return the max_height
+- If not, we want to check every direction and calculate their new_max_heights and add them to the heap
+- Eventually we will reach the target cell using the path with the lowest height possible. 
+- The min-heap forces us to always explore the path with the minimum "max height so far", which represents the minimum time needed to reach that cell. 
+- Each time we visit a cell, we update the max height as mmax(current_max_height, new_cell_height) because we need to wait until the water rises to at least the height of the new cell. 
+
+
+### Time and Space
+- Time: O(n^2 log n)
+- Space: O(n^2)
