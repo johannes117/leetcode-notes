@@ -124,3 +124,63 @@ class Solution:
     - So the DFS travesal takes O(n)
 Total: O(n log n)
 Space: O(n)
+
+## Min Cost to Connect Points
+You are given a 2-D integer array points, where points[i] = [xi, yi]. Each points[i] represents a distinct point on a 2-D plane.
+
+The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between the two points, i.e. |xi - xj| + |yi - yj|.
+
+Return the minimum cost to connect all points together, such that there exists exactly one path between each pair of points.
+
+```python
+# Return the minimum cost to connect all points together. 
+# Prim's Algorithm
+# Setup: init n, total_cost, seen set, and min_heap with a tuple (0,0)
+# while the seen set length is less than n
+# unpack distance and index from heap
+# if in seen continue
+# add to seen
+# increment cost with distance
+# unpack i coords from points array using index
+# loop through j in n, if not in seen, unpack j coords
+# calculate the distance between the i and j coords and push onto the heap. 
+# return total cost. 
+import heapq
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+        n = len(points)
+        total_cost = 0
+        visited = set()
+        min_heap = [(0,0)]
+
+        while len(visited) < n:
+            # unpack 
+            dist, i = heapq.heappop(min_heap)
+            if i in visited:
+                continue
+            
+            visited.add(i)
+            total_cost += dist
+
+            xi, yi = points[i]
+
+            for j in range(n):
+                if j not in visited:
+                    xj, yj = points[j]
+                    nei_dist = abs(xi-xj) + abs(yi-yj)
+                    heapq.heappush(min_heap, (nei_dist, j))
+        
+        return total_cost
+```
+
+### Key Concepts
+- We can solve this using Prim's algorithm: a greedy method used to find the minimum spanning tree of a connected, weighted graph
+- By starting from an arbitrary vertex and repeatedly adding the smallest edge that connects a vertex in the tree to a vertex outside it. 
+- This process continues until all verices are included, ensuring the total edge weight is minimized. 
+- In this solution, we use a min heap to keep track of the smallest "edge" in the heap. When we pop this edge, we check if we have already used that point, if not then we set it to visited. 
+- For a given point popped form the heap, after it has been set to visited, we add all of the edge distances from that point to every other point to the heap.
+- This means that any of those edges may be popped from the heap at some point and used, if that edge turned out to be the smallest distance available. 
+
+### Time and Space:
+- Time: O(n^2 log(n))
+- Space: O(n^2)
