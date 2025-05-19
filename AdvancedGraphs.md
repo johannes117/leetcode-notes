@@ -243,3 +243,112 @@ class Solution:
 ### Time and Space
 - Time: O(n^2 log n)
 - Space: O(n^2)
+
+## Alien Dictionary
+There is a foreign language which uses the latin alphabet, but the order among letters is not "a", "b", "c" ... "z" as in English.
+
+You receive a list of non-empty strings words from the dictionary, where the words are sorted lexicographically based on the rules of this new language.
+
+Derive the order of letters in this language. If the order is invalid, return an empty string. If there are multiple valid order of letters, return any of them.
+
+A string a is lexicographically smaller than a string b if either of the following is true:
+
+The first letter where they differ is smaller in a than in b.
+There is no index i such that a[i] != b[i] and a.length < b.length.
+
+```python
+class Solution:
+    def foreignDictionary(self, words: List[str]) -> str:
+        graph = defaultdict(list)
+        all_chars = set(''.join(words))
+
+        # Build Graph
+        for word1, word2 in zip(words, words[1:]):
+            for i in range(min(len(word1), len(word2))):
+                if word1[i] != word2[i]:
+                    graph[word1[i]].append(word2[i])
+                    break
+            else:
+                if len(word1) > len(word2):
+                    return ""
+        # Topological DFS
+        UNVISITED, VISITING, VISITED = 0, 1, 2
+        states = {char: UNVISITED for char in all_chars}
+        order = []
+
+        def dfs(c):
+            if states[c] == VISITING: # cycle detected
+                return False
+            if states[c] == VISITED: 
+                return True
+            states[c] = VISITING
+
+            for nei in graph[c]:
+                if not dfs(nei):
+                    return False
+            
+            states[c] = VISITED
+            order.append(c)
+            return True
+        
+        for c in all_chars:
+            if not dfs(c):
+                return ""
+        
+        return ''.join(reversed(order))
+```
+
+### Key Concepts:
+### Problem Description
+- Return lexicographically sorted string of unique letters in new language
+- Return empty string if words are not lexicographically sorted
+
+1. Graph Construction
+   - Build adjacency list representation
+   - Use zip() to compare adjacent words
+   - Create edges based on first differing character
+   - Handle invalid cases (longer prefix words)
+
+2. Topological Sort
+   - Post-order DFS traversal
+   - Track node states: UNVISITED, VISITING, VISITED
+   - Detect cycles during traversal
+   - Build result in reverse order
+
+### Implementation Steps
+1. Graph Setup
+   ```python
+   graph = defaultdict(list)
+   all_chars = set(''.join(words))
+   ```
+
+2. Graph Construction
+   ```python
+   for word1, word2 in zip(words, words[1:]):
+       for i in range(min(len(word1), len(word2))):
+           if word1[i] != word2[i]:
+               graph[word1[i]].append(word2[i])
+               break
+   ```
+
+3. DFS Traversal
+   ```python
+   def dfs(c):
+       if states[c] == VISITING:  # Cycle detected
+           return False
+       if states[c] == VISITED:
+           return True
+       
+       states[c] = VISITING
+       for nei in graph[c]:
+           if not dfs(nei):
+               return False
+       
+       states[c] = VISITED
+       order.append(c)
+       return True
+   ```
+
+### Time & Space Complexity
+- Time: O(C + E) where C is number of characters and E is number of edges
+- Space: O(C) for graph and states storage
