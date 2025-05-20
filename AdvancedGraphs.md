@@ -352,3 +352,50 @@ class Solution:
 ### Time & Space Complexity
 - Time: O(C + E) where C is number of characters and E is number of edges
 - Space: O(C) for graph and states storage
+
+## Cheapest Flights Within K Stops
+There are n airports, labeled from 0 to n - 1, which are connected by some flights. You are given an array flights where flights[i] = [from_i, to_i, price_i] represents a one-way flight from airport from_i to airport to_i with cost price_i. You may assume there are no duplicate flights and no flights from an airport to itself.
+
+You are also given three integers src, dst, and k where:
+
+src is the starting airport
+dst is the destination airport
+src != dst
+k is the maximum number of stops you can make (not including src and dst)
+Return the cheapest price from src to dst with at most k stops, or return -1 if it is impossible.
+
+```python
+class Solution:
+    def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
+        prices = [float('inf')] * n
+        prices[src] = 0
+
+        for i in range(k+1):
+            temp_prices = prices.copy()
+
+            for flight in flights:
+                from_city, to_city, price = flight
+
+                if prices[from_city] != float('inf') and prices[from_city] + price < temp_prices[to_city]:
+                    temp_prices[to_city] = prices[from_city] + price
+                
+            prices = temp_prices
+
+        return prices[dst] if prices[dst] != float('inf') else -1
+```
+
+### Key Concepts:
+- Find the cheapest path from src to dst with at most k stops. 
+-  Bellman-Ford Algorithm: Finds the shortest path from a source to all other vertices, can handle constraints on the number of edges (in out case, k stops means k+1 edges)
+-  Initialise distances to infinity
+-  distance to source is 0
+-  loop in the range k + 1 (k stops meanss k+1 edges)
+-  create a copy of prices to avoid using updated values in the same iteration
+-  loop through flights, unpack from, to and price
+-  if the source city is reachable and we can improve the price to the destination: update the price of the to city in temp
+-  update prices for next iteration
+- return the price to destination, or -1 if unreachable. 
+
+### Time and Space
+- Time: O(k * E), where E is the number of flights
+- Space: O(n) for the prices array
