@@ -117,3 +117,38 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - SpacE: O(1)
+
+## Min Cost Climbing Stairs
+You are given an array of integers cost where cost[i] is the cost of taking a step from the ith floor of a staircase. After paying the cost, you can step to either the (i + 1)th floor or the (i + 2)th floor.
+
+You may choose to start at the index 0 or the index 1 floor.
+
+Return the minimum cost to reach the top of the staircase, i.e. just past the last index in cost.
+
+```python
+# given a cost array, return the minimum cost to reach the top of the staircase
+# Bottom Up DP Constant
+# intialise n, prev and curr
+# loop from index 2 to n+1
+# setup prev to curr, and set curr to the minimum of cost 2 steps back plus prev, or cost 1 step back of curr. 
+#return curr
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        n = len(cost)
+        prev, curr = 0, 0
+
+        for i in range(2, n+1):
+            prev, curr = curr, min(cost[i-2] + prev, cost[i-1] + curr)
+        
+        return curr
+```
+
+### Key Concepts
+- Similar to Fibonacchi and Climbing stairs: We can solve it using Top down memoized, or bottom up tabulization or bottom up constant.
+- For constant we just keep a prev and curr pointer, which tracks what the cost of the previous two steps were. 
+- When we move to the next set of steps, set prev to curr, and set curr to the mimimum of the cost 2 steps back + prev, and the cost 1 step back + curr. 
+- return curr
+
+### Time and Space:
+- Time: O(n)
+- Space: O(1)
