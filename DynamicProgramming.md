@@ -152,3 +152,48 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+
+## House Robber
+You are given an integer array nums where nums[i] represents the amount of money the ith house has. The houses are arranged in a straight line, i.e. the ith house is the neighbor of the (i-1)th and (i+1)th house.
+
+You are planning to rob money from the houses, but you cannot rob two adjacent houses because the security system will automatically alert the police if two adjacent houses were both broken into.
+
+Return the maximum amount of money you can rob without alerting the police.
+
+```python
+# return maximum ammount of money you can rob without alerting the police
+# trick: maximum amount of any given house is the max of not robbing it or robbing it. 
+# Robbing the House: the current value of the house + the value of the house 2 steps back 
+# Not Robbing the House: just the current value of the house. 
+# base cases: n == 1: nums[0], n ==2: max(nums[0], nums[1])
+# prev and curr pointers initialised to base cases
+# loop from 2 to n
+# set prev to curr, and curr to the max of not robbing or robbing the house
+# return curr
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n == 1: return nums[0]
+        if n == 2: return max(nums[0], nums[1])
+
+        prev, curr = nums[0], max(nums[0], nums[1])
+
+        for i in range(2, n):
+            prev, curr = curr, max(prev + nums[i], curr)
+        
+        return curr
+```
+
+### Key Concepts:
+- Very similar to Climbing Stairs and fibonacci but with a trick
+- We either want to rob a house, or not rob it.
+- robbing the house, means we want to take the value of the house 2 steps back and add it to the value of the current house. 
+- not robbing the house, means that we just take the value of the house 1 step back. 
+- We take the max of robbing or not robbing the house, and that becomes the new curr pointer. 
+- This is a bottom up approach, because we are starting from the bottom, base case and iteratively moving through the array and keeping track of the totals as we go. 
+- This constant space optimisation doesn't use tabulation since we only care about the last two houses. 
+
+### Time and Space:
+- Time: O(n)
+- Space: O(1)
