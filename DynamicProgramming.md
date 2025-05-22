@@ -226,3 +226,62 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+## Longest Palindromic Substring
+Given a string s, return the longest substring of s that is a palindrome.
+
+A palindrome is a string that reads the same forward and backward.
+
+If there are multiple palindromic substrings that have the same length, return any one of them.
+
+```python
+# Expand around the center approach
+# Edgecase: if not s return ""
+# initialise start variable: starting index of the longest palindromic substring
+# initialise max_length to 1: length of the longest palindromic substring
+# helper function to expand around center: left and right pointers as arguments
+# while left and right are inbounds, and the characters at the left and right indices are equal: increment pointers
+# return right - left - 1: The length of palindrome. 
+# loop for length of s
+# call helper function twice for odd and even, store in len1 and len2
+# Find the maximum length from both expansions
+# Update if we found a longer palindrome: if length is greater than max_length, update it, and calculate the new starting index of the substring
+# start = i - (length - 1) // 2
+# return substring from start to start + max_length
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        if not s: return ""
+        start = 0
+        max_len = 1
+
+        def expand_around_center(left, right):
+            while left >= 0 and right < len(s) and s[left] == s[right]:
+                left -= 1
+                right += 1
+            return right - left - 1
+        
+        for i in range(len(s)):
+            len1 = expand_around_center(i, i)
+            len2 = expand_around_center(i, i+1)
+
+            length = max(len1, len2)
+
+            if length > max_len:
+                max_len = length
+                start = i - (length - 1 ) // 2
+        
+        return s[start:start+max_len]
+```
+
+### Key Concepts:
+- We can solve using an "Expand around the center" approach
+- Essentially take a left and a right pointer and shift them left and right aslong as the pointers are in bounds and equal to eachother. 
+- Once these conditions are not met, we have found the longest palindromic substring for that index, and we return the length of that substring
+- We call the helper function twice, once for odd and once for even for every index. Odd: i, i and Even: i, i + 1
+- Take the maximum of the two calculations, and if its greater than our global maximum we update our global variables. 
+- For the start index, we need to calculate it using the max length: i - (length - 1) // 2
+- We simply return the string from the start index to the start index + the max length calculated
+
+### Time and Space:
+- O(n^2): Worst case we visit every index, and have to expand for every character in the string. 
+- O(1)
