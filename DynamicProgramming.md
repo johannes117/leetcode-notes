@@ -197,3 +197,32 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+## House Robber 2
+You are given an integer array nums where nums[i] represents the amount of money the ith house has. The houses are arranged in a circle, i.e. the first house and the last house are neighbors.
+
+You are planning to rob money from the houses, but you cannot rob two adjacent houses because the security system will automatically alert the police if two adjacent houses were both broken into.
+
+Return the maximum amount of money you can rob without alerting the police.
+
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:     
+        if len(nums) == 0: return 0
+        if len(nums) == 1: return nums[0]
+        if len(nums) == 2: return max(nums[0], nums[1])
+        def helper(nums):
+            prev, curr = nums[0], max(nums[0], nums[1])
+            for i in range(2, len(nums)):
+                prev, curr = curr, max(curr, prev + nums[i])
+            return curr
+        return max(helper(nums[1:]), helper(nums[:-1]))
+```
+
+### Key Concepts:
+- Same as house robber 1, 
+- just slice the array and perform the algorithm on all of the nums except the first, and all of the nums except the last
+
+### Time and Space:
+- Time: O(n)
+- Space: O(1)
