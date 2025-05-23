@@ -319,3 +319,59 @@ class Solution:
 ### Time and Space:
 - Time: O(n^2), we have to iterate through every character in the string, and may have to loop through every substring of length n in the worst case. 
 - Space: O(1)
+
+
+## Decode Ways
+A string consisting of uppercase english characters can be encoded to a number using the following mapping:
+
+'A' -> "1"
+'B' -> "2"
+...
+'Z' -> "26"
+To decode a message, digits must be grouped and then mapped back into letters using the reverse of the mapping above. There may be multiple ways to decode a message. For example, "1012" can be mapped into:
+
+"JAB" with the grouping (10 1 2)
+"JL" with the grouping (10 12)
+The grouping (1 01 2) is invalid because 01 cannot be mapped into a letter since it contains a leading zero.
+
+Given a string s containing only digits, return the number of ways to decode it. You can assume that the answer fits in a 32-bit integer.
+
+```python
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        if not s or s[0] == '0': return 0
+        n = len(s)
+        dp = [0] * (n+1)
+        dp[0], dp[1] = 1, 1
+
+        for i in range(2, n+1):
+            # Single Digit Decode
+            if s[i-1] != '0':
+                dp[i] += dp[i-1]
+
+            # Double Digit Decode
+            two_digit = int(s[i-2:i])
+            if 10 <= two_digit <= 26:
+                dp[i] += dp[i-2]
+        
+        return dp[-1]
+```
+
+### Key Concepts:
+- Can be solved using Bottom Up Tabulation (or Bottom Up Constant if we use the pointers)
+- Edgecases: not s or first character is 0 then we return 0 immediately. 
+- Basecases: The first two positions in the DP array are both set to 1 as base cases. 
+- Explanation: dp[0] in this case represents an empty string, which can only be decoded 1 way. 
+- dp[1] has already been checked as non 0. no matter what number this is, it will only have 1 way to be decoded. 
+- Hence our base cases are positions 0 and 1 as 1 and 1 respectively. 
+- We then loop from 2 to n + 1 (the end of the dp array)
+- For each index, we want to check its single decode and double decode.
+- For single, aslong as the previous character was not 0, we add the previous value to our current value
+- For double, we use sliding to convert the indexes into an integer. We then check if its between 10 and 26.
+- If so then its a valid double digit, and can be decoded, so we add it to the tally for that index in the dp array. 
+- We return the final value in the dp table, as it will contain the accumulated number of decodings. 
+- We can optimmise the space by using pointers since we only care about the previous two indexes. 
+
+### Time and Space
+- Time: O(n)
+- Space: O(n) (Can be optimised)
