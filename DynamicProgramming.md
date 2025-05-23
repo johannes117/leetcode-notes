@@ -375,3 +375,46 @@ class Solution:
 ### Time and Space
 - Time: O(n)
 - Space: O(n) (Can be optimised)
+
+
+## Coin Change
+You are given an integer array coins representing coins of different denominations (e.g. 1 dollar, 5 dollars, etc) and an integer amount representing a target amount of money.
+
+Return the fewest number of coins that you need to make up the exact target amount. If it is impossible to make up the amount, return -1.
+
+You may assume that you have an unlimited number of each coin.
+
+```python
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        coins.sort()
+        dp = [0] * (amount + 1)
+
+        for i in range(1, amount+1):
+            minimum = float('inf')
+
+            for coin in coins:
+                diff = i - coin
+                if diff < 0:
+                    break
+                minimum = min(minimum, dp[diff] + 1)
+            
+            dp[i] = minimum
+        
+        if dp[amount] < float('inf'):
+            return dp[amount]
+        else:
+            return -1
+```
+
+### Key Concepts:
+- Can be solved using Top Down Memoization or Bottom Up Tabulation
+- Bottom Up approach: Maintain a dp array of pre-calculated values that we can use to calculate later values using their diffs with the target amount. 
+- Since we track the minimum number of coins to add up to each index amount in the dp array, we can simply refer to previous values in the dp array to calculate a new minimum amount for each coin
+- We update the minimum value if its the smallest amount for that iteration
+- Once we have checked all the coins, we set the dp[index] to the minimum we found. 
+- Once the loop completes we should have computed the minimum number of coins needed for the target amount which is the last element in the dp array. 
+
+### Time and Space
+- Time: O(Coins * Amount)
+- Space: O(Amount)
