@@ -285,3 +285,37 @@ class Solution:
 ### Time and Space:
 - O(n^2): Worst case we visit every index, and have to expand for every character in the string. 
 - O(1)
+
+## Palindromic Substrings
+Given a string s, return the number of substrings within s that are palindromes.
+
+A palindrome is a string that reads the same forward and backward.
+
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        if not s: return 0
+        count = [0]
+
+        def helper(left, right):
+            while left >= 0 and right < len(s) and s[left] == s[right]:
+                left -= 1
+                right += 1
+                count[0] += 1
+        
+        for i in range(len(s)):
+            helper(i, i)
+            helper(i, i+1)
+        
+        return count[0]
+```
+
+### Key Concepts:
+- Almost exactly the same as the Longest palindromic substring, although this time we simply increment the count for every found substring. 
+- For a given starting index for left and right pointers, while pointers are inbound, and the values at the pointers are equal, we have found a palndromic substring. Increment counter
+- Call helper function for odd and even: i, i and i, i + 1 respectively
+- Return count. 
+
+### Time and Space:
+- Time: O(n^2), we have to iterate through every character in the string, and may have to loop through every substring of length n in the worst case. 
+- Space: O(1)
