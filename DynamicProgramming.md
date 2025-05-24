@@ -418,3 +418,49 @@ class Solution:
 ### Time and Space
 - Time: O(Coins * Amount)
 - Space: O(Amount)
+
+## Maximum Product Subarray
+Given an integer array nums, find a subarray that has the largest product within the array and return it.
+
+A subarray is a contiguous non-empty sequence of elements within an array.
+
+You can assume the output will fit into a 32-bit integer.
+
+```python
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        if not nums: return 0
+
+        max_so_far = nums[0]
+        min_so_far = nums[0]
+        result = nums[0]
+
+        for i in range(1, len(nums)):
+            curr = nums[i]
+
+            # calculate new min and max
+            temp = max(curr, max_so_far * curr, min_so_far * curr)
+            min_so_far = min(curr, max_so_far * curr, min_so_far * curr)
+            max_so_far = temp
+
+            result = max(result, max_so_far)
+        
+        return result
+```
+
+### Key Concepts:
+- We can solve this by maintaining a min so far and a max so far, and when we calculate the max we have three outcomes:
+-  Curr: start a new subarray here
+- max_so_far * curr: Extend the best subarray from previous position
+- min_so_far * curr: Extend the worst subarray from previous position (might become best if curr is negative)
+- check if not nums, return 0
+- initialise max_so_far, min_so_far, result to the first element in nums
+- loop from 1 to len nums
+- set curr to the current nums value at index
+- Calculate new max and min of curr, max_so_far * curr, min_so_far * curr
+- update the global maximum
+- return result
+
+### Time and Space:
+- Time: O(n)
+- Space: O(1)
