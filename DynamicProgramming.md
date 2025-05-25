@@ -464,3 +464,47 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+## Word Break
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of dictionary words.
+
+You are allowed to reuse words in the dictionary an unlimited number of times. You may assume all dictionary words are unique.
+
+```python
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        # Convert to set for O(1) lookup
+        word_set = set(wordDict)
+        n = len(s)
+        # dp[i] represents if s[0:i] can be segmented
+        dp = [False] * (n+1)
+        dp[0] = True # Basecase
+
+        # Check each position
+        for i in range(1, n + 1):
+            # Try all possible previous positions
+            for j in range(i):
+                # If we can segment up to j and s[j:i] is a valid word
+                if dp[j] and s[j:i] in word_set:
+                    dp[i] = True
+                    break # Found one valid segmentation, no need to continue
+        
+        return dp[n]
+```
+
+### Key Concepts:
+- We can use Bottom Up DP to solve this problem.
+- We initialise a dp array of False values of length string + 1 (We need to include the basecase of length 0)
+- Basecase: dp[0] = True because an empty can always be segmented
+- we loop from 1 to n + 1 (basecase at 0 has already been set)
+- try all previous positions basically loop from 0 to if
+- if the j position in the dp array is True, then we check if the remaining substring is in our wordDict
+- Since basecase at index 0 is true, eventually we will find a substring from 0 to the first split point
+- Example "leetcode", at position 4 dp = [T, F, F, F, T, ...] we have detected that we were able to split "leet" because leet is in our word dictionary
+- and "" is a valid segment. 
+- When we reach position 8, and j reaches position 4, we are then left with s[j:i] = "code" which is in our word set
+- we would then set dp[8] to true, which will be our final answer!
+
+### Time and Space
+- Time: O(n^2 * m): We have a nested for loop for O(n^2) and we have a string lookup which is O(m) where m is the length of the word
+- Space: O(n + k), where n is length of string and k is the length of the word dict. 
