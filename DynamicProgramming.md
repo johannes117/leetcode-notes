@@ -508,3 +508,33 @@ class Solution:
 ### Time and Space
 - Time: O(n^2 * m): We have a nested for loop for O(n^2) and we have a string lookup which is O(m) where m is the length of the word
 - Space: O(n + k), where n is length of string and k is the length of the word dict. 
+
+
+## Longest Increasing Subsequence
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+A subsequence is a sequence that can be derived from the given sequence by deleting some or no elements without changing the relative order of the remaining characters.
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [1] * n
+
+        for i in range(1, n):
+            for j in range(i):
+                if nums[i] > nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+        
+        return max(dp)
+```
+
+### Key Concepts:
+- Almost identical algorithm to Word Break. We can use Bottom up DP (Tabulation) to store a maximum increasing subsequence at every index. 
+- Basecase: dp[0] = 1, the first number is itself a subsequence and since its the first it will automatically be 1. 
+- For every position i, we check each previous position, if its smaller, we want to set our current longest subsequence to the max of our current longest vs the max of the previous position + 1 (ourself)
+- We return the max value in dp since the answer won't necessarily be the last one in the dp table. 
+
+### Time and Space:
+- Time: O(n^2), due to the nested for loop
+- Space: O(n), due to the dp array of length n
