@@ -538,3 +538,86 @@ class Solution:
 ### Time and Space:
 - Time: O(n^2), due to the nested for loop
 - Space: O(n), due to the dp array of length n
+
+## Partition Equal Subset Sum
+You are given an array of positive integers nums.
+
+Return true if you can partition the array into two subsets, subset1 and subset2 where sum(subset1) == sum(subset2). Otherwise, return false.
+
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        total_sum = sum(nums)
+
+        if total_sum % 2 != 0:
+            return False
+        
+        target = total_sum // 2
+
+        dp = [False] * (target + 1)
+        dp[0] = True
+
+        for num in nums:
+            for j in range(target, num -1, -1):
+                dp[j] = dp[j] or dp[j-num]
+        
+        return dp[target]
+```
+
+### Key Concepts:
+- This problem can be rewritten as: Can you find a subset that can sum up to the total sum // 2?
+- We can use bottom up DP (Tabulation) to build up a DP array where each index determines whether we can sum up to that index using the numbers available. 
+- The basecase is dp[0] = True, because 0 can always be summed up to. 
+- each iteration, we want to update the value at dp[j] when j - num (the current number in the iteration) is an integer that we previously computed as summable. 
+- In each inner for loop, we iterate backwards, this prevents using the same number twice. 
+
+### Time and Space
+- Time: O(n * sum)
+- Space: O(sum)
+
+## Unique Paths
+There is an m x n grid where you are allowed to move either down or to the right at any point in time.
+
+Given the two integers m and n, return the number of possible unique paths that can be taken from the top-left corner of the grid (grid[0][0]) to the bottom-right corner (grid[m - 1][n - 1]).
+
+You may assume the output will fit in a 32-bit integer.
+
+```python
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = []
+        for _ in range(m):
+            dp.append([0]*n)
+
+        dp[0][0] = 1
+
+        for i in range(m):
+            for j in range(n):
+                if i == j == 0:
+                    continue
+                val = 0
+                if i > 0:
+                    val += dp[i-1][j]
+                if j > 0:
+                    val += dp[i][j-1]
+                dp[i][j] = val
+        
+        return dp[m-1][n-1]
+```
+
+### Key Concepts:
+- This first row and the first column, only ever have 1 way to reach those cells
+- Out of bounds can be considered as a '0', not adding anything. 
+- We can solve this using Bottom Up DP (Tabulation)
+- Each position in the dp array represents the number of ways you can reach that position from the starting position.
+- We iterate through the grid normally using a nested for loop i, j. 
+- We first check to make sure we are not at the basecase/starting position
+- We initialise a val variable which we will use to accumulate the number of ways we can reach our current position
+- we check if i > 0, this means that theres a value above us (means that we are on atleast the second row). If so we want to actually add the value of the position above us to our val
+- We do the same thing with j, we check if theres a value to our left, if so we add it to our tally. 
+- We then set our current position to our computed Val total
+- Once we reach the final position we will be left with the total number of ways to reach that position. 
+
+### Time and Space
+- Time: O(m*n)
+- Space: O(m*n)
