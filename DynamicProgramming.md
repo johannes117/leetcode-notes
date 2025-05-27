@@ -621,3 +621,49 @@ class Solution:
 ### Time and Space
 - Time: O(m*n)
 - Space: O(m*n)
+
+## Longest Common Subsequence
+Given two strings text1 and text2, return the length of the longest common subsequence between the two strings if one exists, otherwise return 0.
+
+A subsequence is a sequence that can be derived from the given sequence by deleting some or no elements without changing the relative order of the remaining characters.
+
+For example, "cat" is a subsequence of "crabt".
+A common subsequence of two strings is a subsequence that exists in both strings.
+
+```python
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        m, n = len(text1), len(text2)
+
+        memo = {}
+        def longest(i, j):
+            if (i, j) in memo:
+                return memo[(i,j)]
+            if i == m or j == n:
+                memo[(i, j)] = 0
+                return memo[(i, j)]
+            elif text1[i] == text2[j]:
+                memo[(i, j)] = 1 + longest(i+1, j+1)
+                return memo[(i, j)]
+            else:
+                memo[(i,j)] = max(longest(i, j+1), longest(i+1, j))
+                return memo[(i,j)]
+        
+        return longest(0,0)
+```
+
+### Key Concepts
+- We essentially use a pointer to iterate through each string
+- If both pointers are equal, increment both
+- else, we want to get the max of incrementing one of them and not the other. (Decision Tree)
+- We can use Top down DP using Memoization to solve this problem
+- Initialise m and n
+- initialise helper function with i and j
+- check if in bounds, return 0
+- check if match, return 1 + helper i and j incremented
+- if no match, return max of moving j and moving i
+- return helper at 0, 0
+
+### Time and Space:
+- Time: O(m*n)
+- Space: O(m*n)
