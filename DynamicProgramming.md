@@ -667,3 +667,67 @@ class Solution:
 ### Time and Space:
 - Time: O(m*n)
 - Space: O(m*n)
+
+## Best Time to Buy and Sell Stock with Cooldown
+You are given an integer array prices where prices[i] is the price of NeetCoin on the ith day.
+
+You may buy and sell one NeetCoin multiple times with the following restrictions:
+
+After you sell your NeetCoin, you cannot buy another one on the next day (i.e., there is a cooldown period of one day).
+You may only own at most one NeetCoin at a time.
+You may complete as many transactions as you like.
+
+Return the maximum profit you can achieve.
+
+```python
+# return the maximum profit you can achieve
+# This can be solved using Bottom Up DP (Tabulation) Space Optimised
+# Since we only need the previous days values, we can compress the table into three variables: hold, sell, rest
+# hold: max profit when holding a stock
+# sold: max profit when just sold (cooldown day)
+# rest: max profit when resting (can buy)
+# chack if prices is less than or equal to 1, return 0
+# initialise hold, sold, rest as -prices[0], 0 , 0
+# loop from 1 to prices
+# create prev_ variables 
+# To hold today: either keep holding or but today (from rest state)
+# To sell today: sell the stock we are holding
+# To rest today: either keep resting or finish cooldown
+# at the end, we want to either be resting or have just sold.  
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        if len(prices) <= 1:
+            return 0
+
+        hold = -prices[0] # Buy first stock
+        sold = 0 # Can't sell first stock
+        rest = 0
+
+        for i in range(1, len(prices)):
+            prev_hold = hold
+            prev_sold = sold
+            prev_rest = rest
+
+            # Buy or Hold
+            hold = max(prev_hold, prev_rest - prices[i])
+
+            # To Sell Today
+            sold = prev_hold + prices[i]
+
+            # To rest today 
+            rest = max(prev_rest, prev_sold)
+        
+        return max(sold, rest)
+```
+
+### Key Concepts
+- Bottom Up DP Space Optimised is used in this solution. 
+- We essentially track the decision made in the previous iteration
+- Decision to buy, we take the max of the previous hold, or previous rest - prices[i]
+- Decision to Sell, we take the previous hold and add price at current index
+- Decision to Rest, we take the max of previos rest or previous sold
+- We return the maximum between the sold and rest values
+
+### Time and Space:
+- Time: O(n)
+- Space: O(1)
