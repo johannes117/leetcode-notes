@@ -731,3 +731,42 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+## Coin Change 2
+You are given an integer array coins representing coins of different denominations (e.g. 1 dollar, 5 dollars, etc) and an integer amount representing a target amount of money.
+
+Return the number of distinct combinations that total up to amount. If it's impossible to make up the amount, return 0.
+
+You may assume that you have an unlimited number of each coin and that each value in coins is unique.
+
+```python
+# return the number of ways we can make up the amount using the available coins
+# Bottom Up DP (Tabulation)
+# Create a DP array where dp[i] = number of ways to make amount i
+# basecase: dp[0] = 1 (one way to make 0, use no coins)
+# For each coin, update all amounts that can be formed using that coin
+# for each amount, add the number of ways from amount - coin
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        dp = [0] * (amount + 1)
+        dp[0] = 1
+
+        for coin in coins:
+            for i in range(coin, amount + 1):
+                dp[i] += dp[i - coin]
+
+        return dp[-1]
+```
+
+### Key Concepts
+Algorithm
+1. Create a DP array where dp[i] = number of ways to make amount i
+2. Initialize dp[0] = 1 (one way to make amount 0: use no coins)
+3. For each coin, update all amounts that can be formed using that coin
+4. For each amount, add the number of ways from amount - coin
+- Order matters in iteration: We iterate through coins first, then amounts. This prevents counting the same combination multiple times (e.g., [1,2] and [2,1] as different ways).
+- Building up solutions: For each amount, we consider adding each coin and look up how many ways we can make the remaining amount.
+
+### Time and Space:
+- Time: O(m*n)
+- Space: O(n)
