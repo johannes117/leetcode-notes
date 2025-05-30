@@ -770,3 +770,57 @@ Algorithm
 ### Time and Space:
 - Time: O(m*n)
 - Space: O(n)
+
+## Target Sum
+You are given an array of integers nums and an integer target.
+
+For each number in the array, you can choose to either add or subtract it to a total sum.
+
+For example, if nums = [1, 2], one possible sum would be "+1-2=-1".
+If nums=[1,1], there are two different ways to sum the input numbers to get a sum of 0: "+1-1" and "-1+1".
+
+Return the number of different ways that you can build the expression such that the total sum equals target.
+
+```python
+# Return the number of ways we can sum up to target with our nums list
+# Top Down Memoization: recursive helper with index, and curr sum
+# check if in memo
+# if we have reached the len of nums, return 1 if current sum is target else 0
+# we want to store the value returned of both subtracting or adding the current number to the sum at the current position in the memo
+# return current position in memo
+# call helper function at position 0, sum 0
+class Solution:
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        memo = {}
+        n = len(nums)
+
+        def dfs(index, curr_sum):
+            if (index, curr_sum) in memo:
+                return memo[(index, curr_sum)]
+            
+            if index == n:
+                return 1 if curr_sum == target else 0
+            
+            memo[(index, curr_sum)] = (
+                dfs(index + 1, (curr_sum + nums[index])) +
+                dfs(index + 1, (curr_sum - nums[index]))
+            )
+            return memo[(index, curr_sum)]
+
+        return dfs(0,0)
+```
+
+### Key Concepts (Top Down)
+- Standard Top Down approach
+- We can either add or subtract a number at each index to add to the target sum.
+- We do a DFS until we hit our basecase of index == n, this means we have hit a leaf node
+- If that leaf node is equal to our target, we want to count that as a way to sum up to that target
+- If not, then we return 0
+- That means our helper function will return the number of ways that branch could sum up to the target
+- We add simple memoization to prevent recalculating previous values and to improve the time complexity. 
+
+### Time and Space
+- Time: O(m*n)
+- Space: O(m*n)
+
+Note: This can be improved with Bottom Up Space optimised. 
