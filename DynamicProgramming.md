@@ -962,3 +962,58 @@ class Solution:
 ### Time and Space:
 - Time: O(m*n)
 - Space: O(m*n)
+
+## Distinct Subsequences
+You are given two strings s and t, both consisting of english letters.
+
+Return the number of distinct subsequences of s which are equal to t.
+
+```python
+# return the number of distinct subsequences 
+# Top Down DP (Memoization) approach
+# initialise memo
+# helper dfs with i and j
+# Basecase: if j equals len t, return 1
+# if i equals len t then we didnt find a valid subsequence return 0
+# check memo
+# if characters are equal, 
+# call dfs with i and j incremented, plus dfs of just i incremented
+# else, call dfs of just i incremented
+# store in memo and return 
+# return dfs at 0,0
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        memo = {}
+
+        def dfs(i, j):
+            if j == len(t):
+                return 1
+            if i == len(s):
+                return 0
+
+            if (i, j) in memo:
+                return memo[(i,j)]
+            
+            if s[i] == t[j]:
+                result = dfs(i+1, j+1) + dfs(i+1, j)
+            else:
+                result = dfs(i+1, j)
+            memo[(i,j)] = result
+            return result
+        
+        return dfs(0,0)
+```
+
+### Key Concepts:
+- Can be solved with Top Down DP (Memoization)
+- Similar template to most Top down dp solutions
+- Basecase: if j index equals length of target string, we found a subsequence return 1
+- if i is length of input string, we want to return 0 we didnt find a subsequence
+- Use a memo to prevent repeated work
+- if characters are equal, we want to call dfs on both: moving i pointer, and moving both i and just
+- if characters are not equal, we only want to call dfs on moving i pointer
+
+
+### Time and Space:
+Time: O(m*n)
+Space: O(m*n)
