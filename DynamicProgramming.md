@@ -824,3 +824,76 @@ class Solution:
 - Space: O(m*n)
 
 Note: This can be improved with Bottom Up Space optimised. 
+
+## Interleaving String
+You are given three strings s1, s2, and s3. Return true if s3 is formed by interleaving s1 and s2 together or false otherwise.
+
+Interleaving two strings s and t is done by dividing s and t into n and m substrings respectively, where the following conditions are met
+
+|n - m| <= 1, i.e. the difference between the number of substrings of s and t is at most 1.
+s = s1 + s2 + ... + sn
+t = t1 + t2 + ... + tm
+Interleaving s and t is s1 + t1 + s2 + t2 + ... or t1 + s1 + t2 + s2 + ...
+You may assume that s1, s2 and s3 consist of lowercase English letters.
+
+```python
+# Return true if s3 is formed by interleaving s1 and s2
+# Top Down DP Memoization approach
+# Edgecase: check if s1 and s2 add up to s3
+# initialise memo
+# DFS helper function with 3 indexes: i, j, k
+# Basecase: reached end of all strings
+# Basecase 2: out of bounds in s3 (k)
+# check in memo
+# initialise result variable to false
+# Try taking a character from s1: if i inbounds and character equals s3 at k
+# set result to result or the dfs of i + 1, j and k + 1 (increment i and k)
+# do the same for taking a character from s2
+# store result in memo then return it
+# return dfs(0,0,0_)
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        if len(s1) + len(s2) != len(s3):
+            return False
+        
+        memo = {}
+
+        def dfs(i, j, k):
+            if i == len(s1) and j == len(s2) and k == len(s3):
+                return True
+            
+            # k out of bounds
+            if k >= len(s3):
+                return False
+
+            # check memo
+            if (i,j) in memo:
+                return memo[(i,j)]
+
+            result = False
+
+            # Try character from first string
+            if i < len(s1) and s1[i] == s3[k]:
+                result = result or dfs(i + 1, j, k + 1)
+
+             # Try character from second string
+            if j < len(s2) and s2[j] == s3[k]:
+                result = result or dfs(i, j + 1, k + 1)
+            
+            memo[(i,j)] = result
+            return result
+        
+        return dfs(0,0,0)
+```
+
+### Key Concepts:
+- Top Down Memoization approach is easiest to understand for this problem
+- Basecase: if we reach the end of all 3 strings, then we successfully interleaved the strings
+- If k is out of bounds before i or j, then that means we could not find a solution so we return false. 
+- We recursively try picking from the first or second string if we have a match. If neither string has a matching character then we return false. 
+
+### Time and Space:
+- Time: O(m * n)
+- Space: O(m * n)
+
+Note: Can be optimised with Bottom Up Space Optimised. 
