@@ -897,3 +897,68 @@ class Solution:
 - Space: O(m * n)
 
 Note: Can be optimised with Bottom Up Space Optimised. 
+
+## Longest Increasing Path in Matrix
+You are given a 2-D grid of integers matrix, where each integer is greater than or equal to 0.
+
+Return the length of the longest strictly increasing path within matrix.
+
+From each cell within the path, you can move either horizontally or vertically. You may not move diagonally.
+
+```python
+# Find the longest increasing path in a matrix
+# edgecase: check if valid matrix length
+# initialise m, n, memo and directions
+# dfs helper with row and col params
+# if in memo return memo
+# initialise max_length to 1 (this gives the current cell a value)
+# loop through directions, create new_row, and new_col
+# check inbounds, and if new cell is greater than old cell
+# path length is 1 + dfs of new cell
+# update max length to the max of itself and new path length
+# save max length to memo, then return max length
+# initialise result to 0, then iterate through matrix
+# set result to the max of itself and the dfs at current cell
+# return result
+class Solution:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        if not matrix or not matrix[0]:
+            return 0
+
+        m, n = len(matrix), len(matrix[0])
+        memo = {}
+        directions = [(1,0), (0,1), (-1, 0), (0,-1)]
+
+        def dfs(row, col):
+            if (row, col) in memo:
+                return memo[(row, col)]
+            
+            max_len = 1
+
+            for dr, dc in directions:
+                new_row, new_col = row + dr, col + dc
+                if 0 <= new_row < m and 0 <= new_col < n and matrix[new_row][new_col] > matrix[row][col]:
+                    max_len = max(max_len, 1 + dfs(new_row, new_col))
+            
+            memo[(row, col)] = max_len
+            return max_len
+        
+        result = 0
+        for i in range(m):
+            for j in range(n):
+                result = max(result, dfs(i, j))
+        
+        return result
+```
+
+### Key Concepts
+- Can be solved using a Top Down Memoization approach
+- Basecase: when we don't find another valid cell to add to our path
+- We can solve this recursively by calling a DFS on each cell in the matrix
+- We try all 4 directions if and check if they are in bounds or a strictly increasing value. 
+- We use a memo to track the max path of each visited cell to avoid repeated work
+
+
+### Time and Space:
+- Time: O(m*n)
+- Space: O(m*n)
