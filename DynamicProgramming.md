@@ -1017,3 +1017,54 @@ class Solution:
 ### Time and Space:
 Time: O(m*n)
 Space: O(m*n)
+
+## Edit Distance
+You are given two strings word1 and word2, each consisting of lowercase English letters.
+
+You are allowed to perform three operations on word1 an unlimited number of times:
+
+Insert a character at any position
+Delete a character at any position
+Replace a character at any position
+Return the minimum number of operations to make word1 equal word2.
+
+```python
+# return min operations needed to transform word1 to word 2
+# We can use Top Down (Memoization)
+
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        m, n = len(word1), len(word2)
+        memo = {}
+
+        def dfs(i, j):
+            if i == m: return n - j # "Deletes the remaining characters from this string"
+            if j == n: return m - i # "Deletes the remaining characters from this string"
+
+            if (i, j) in memo:
+                return memo[(i, j)]
+            
+            if word1[i] == word2[j]:
+                memo[(i,j)] = dfs(i + 1, j + 1)
+            else:
+                memo[(i, j)] = 1 + min(
+                    dfs(i + 1, j), # Delete
+                    dfs(i, j + 1), # Insert
+                    dfs(i + 1, j + 1) # Replace
+                )
+            return memo[(i, j)]
+            
+        
+        return dfs(0, 0)
+```
+
+### Key Concepts:
+- Can be done using Top Down DP with Memoization
+- Basecases: if we reach the end of one of the strings, we want to return the remaining length of the other string
+- If both characters are equal then we "skip" them since no operations are needed
+- else we want to take the minimum of 3 decisions: delete, replace, and insert + 1 cost
+
+### Time and Space
+- Time: O(m*n)
+- Space: O(m*n)
+
