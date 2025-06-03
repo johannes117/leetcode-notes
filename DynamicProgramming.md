@@ -1108,3 +1108,65 @@ max_ending_here: the max sum of subarray ending at the current position (curr_su
 ### Time and Space:
 - Time: O(n), single pass
 - Space: O(1)
+
+## Burst Balloons
+You are given an array of integers nums of size n. The ith element represents a balloon with an integer value of nums[i]. You must burst all of the balloons.
+
+If you burst the ith balloon, you will receive nums[i - 1] * nums[i] * nums[i + 1] coins. If i - 1 or i + 1 goes out of bounds of the array, then assume the out of bounds value is 1.
+
+Return the maximum number of coins you can receive by bursting all of the balloons.
+
+```python
+# Find the maximum points you can collect by bursting balloons
+# Top Down DP Approach: Decide which balloon to burst last in each subarray. 
+# Add boundary: [1] + nums + [1]
+# initialise n and memo
+# dp helper function with left and right pointers
+# basecase: no balloons between left and right, return 0
+# check memo
+# init max points to 0
+# try bursting each balloon k between left and right as the last one
+# points = left subproblem + right subproblem + burst k last
+# set max_points to the max of max_points and points, save in memo and return
+# return result of dp where left = 0, and right = n - 1
+
+class Solution:
+    def maxCoins(self, nums: List[int]) -> int:
+        balloons = [1] + nums + [1]
+        n = len(balloons)
+        memo = {}
+
+        def dp(left, right):
+            if left + 1 == right:
+                return 0
+            
+            if (left, right) in memo:
+                return memo[(left, right)]
+
+            max_points = 0
+
+            # Try bursting every balloon k last
+            for k in range(left + 1, right):
+                points = (
+                    dp(left, k) +
+                    dp(k, right) + 
+                    (balloons[left] * balloons[k] * balloons[right])
+                )
+                max_points = max(max_points, points)
+            
+            memo[(left, right)] = max_points
+            return max_points
+        
+        return dp(0, n - 1)
+```
+
+### Key Concepts:
+- The trick is to burst the current balloon last. 
+- We can solve using Top Down DP (Memoization)
+- Basecase: if there are no balloons between the left and right pointers we return -
+- Maintain a max_points variable
+- Try every k position between left and right pointers, if the max_points gets updated after trying every k, then we save it in the memo
+
+### Time and Space:
+- Time: O(n^3)
+- Space: O(n^2)
