@@ -1068,46 +1068,7 @@ class Solution:
 - Time: O(m*n)
 - Space: O(m*n)
 
-## Maximum Subarray
-Given an array of integers nums, find the subarray with the largest sum and return the sum.
 
-A subarray is a contiguous non-empty sequence of elements within an array.
-
-```python
-# Can be solved using "Kadane's Algorithm"
-# maintain a max_sum and curr sum
-# loop through nums
-# increment curr_sum with current number
-# set max sum
-# if curr_sum less than 0, reset it to 0
-# return max_sum
-class Solution:
-    def maxSubArray(self, nums: List[int]) -> int:
-        max_sum = float("-inf")
-        curr_sum = 0
-
-        for i in range(len(nums)):
-            curr_sum += nums[i]
-            max_sum = max(max_sum, curr_sum)
-
-            if curr_sum < 0:
-                curr_sum = 0
-        
-        return max_sum
-```
-
-### Key Concepts:
-- Kadane's Algorithm: 
-- Maintain 2 variables: 
-max_so_far: The max bound so far (max_sum)
-max_ending_here: the max sum of subarray ending at the current position (curr_sum)
-- Key Insight: at each position, we decide whether to:
-    - Start a new subarray from current element, or (when we reset curr_sum we are starting a new subarray)
-    - Extend the existing subarray by including the current element. (when we don't reset curr_sum, we extend it)
-
-### Time and Space:
-- Time: O(n), single pass
-- Space: O(1)
 
 ## Burst Balloons
 You are given an array of integers nums of size n. The ith element represents a balloon with an integer value of nums[i]. You must burst all of the balloons.
