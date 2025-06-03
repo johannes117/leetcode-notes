@@ -75,3 +75,54 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+
+## Jump Game II
+You are given an array of integers nums, where nums[i] represents the maximum length of a jump towards the right from index i. For example, if you are at nums[i], you can jump to any index i + j where:
+
+j <= nums[i]
+i + j < nums.length
+You are initially positioned at nums[0].
+
+Return the minimum number of jumps to reach the last position in the array (index nums.length - 1). You may assume there is always a valid answer.
+
+Example 1:
+
+Input: nums = [2,4,1,1,1,1]
+
+Output: 2
+Explanation: Jump from index 0 to index 1, then jump from index 1 to the last index.
+
+```python
+# Return the minimum number of jumps to reach the last position
+# Greedy Approach
+# initialise smallest, n, end and far variables
+# loop to n - 1 (prevents off by 1 error)
+# set far pointer to the max of itself and i = nums[i]
+# if i is at end pointer: increment smallest, and set end to far
+# return smallest
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        smallest = 0
+        n = len(nums)
+        end, far = 0, 0
+
+        for i in range(n-1):
+            far = max(far, i + nums[i])
+            
+            if i == end:
+                smallest += 1
+                end = far
+        
+        return smallest
+```
+
+### Key Concepts:
+- Divide the array into "regions", each region has a smallest number of jumps that can reach that region. 
+- When the index reaches the end pointer, we have reached the end of that region. 
+- We need to set the end pointer to the far pointer, and increment the smallest count. 
+- The far pointer will always be set to the furthest index we can get to from the current index. 
+
+### Time and Space:
+- Time: O(n)
+- Space: O(1)
