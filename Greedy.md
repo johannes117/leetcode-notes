@@ -126,3 +126,53 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(1)
+
+## Gas Station
+There are n gas stations along a circular route. You are given two integer arrays gas and cost where:
+
+gas[i] is the amount of gas at the ith station.
+cost[i] is the amount of gas needed to travel from the ith station to the (i + 1)th station. (The last station is connected to the first station)
+You have a car that can store an unlimited amount of gas, but you begin the journey with an empty tank at one of the gas stations.
+
+Return the starting gas station's index such that you can travel around the circuit once in the clockwise direction. If it's impossible, then return -1.
+
+It's guaranteed that at most one solution exists.
+
+
+```python
+# If valid, return the index of the starting gas station where we can complete an entire loop.
+# Intuition: If we can make it to the end of the array, then we have found the valid starting point
+# Edgecase: if sum of gas less than sum of cost, return 0
+# init total and start variables
+# loop through gas list
+# increment the total by the difference between gas and cost at index i
+# if total dips below 0, reset the state, and increment the start pointer to i + 1
+# return start pointer
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        if sum(gas) < sum(cost):
+            return -1
+        
+        total = 0
+        start = 0
+        for i in range(len(gas)):
+            total += (gas[i] - cost[i])
+
+            if total < 0:
+                total = 0
+                start = i + 1
+        
+        return start
+```
+
+### Key Concepts
+- Greedy Approach: Try every starting position, and move on the moment we detect it won't work
+- We have a total counter that if it dips below 0, we disregard that cycle by resetting the total and moving the starting position. 
+- If a starting position can make it to the end of the array, we know that that position is the one we are looking for
+- We know this because we are guaranteed to have 1 and only 1 solution, and no matter what starting point, the loop must wrap around the end of the array for it to be valid
+- If we can reach the end of the array from any starting point, we know that that must be the point we are looking for. 
+
+
+### Time and Space
+- Time: O(n)
+- Space: O(1)
