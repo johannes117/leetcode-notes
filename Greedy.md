@@ -176,3 +176,63 @@ class Solution:
 ### Time and Space
 - Time: O(n)
 - Space: O(1)
+
+## Hand of Straights
+You are given an integer array hand where hand[i] is the value written on the ith card and an integer groupSize.
+
+You want to rearrange the cards into groups so that each group is of size groupSize, and card values are consecutively increasing by 1.
+
+Return true if it's possible to rearrange the cards in this way, otherwise, return false.
+
+```python
+# return true if we can form groups of size groupSize
+# if hand is not divisible by groupsize return false
+# initialise count dictionary using Counter()
+# initialise a min_heal variable using List(count.keys())
+# heapify
+# while heap
+# get the mallest card from the heap
+# loop through groupsize
+# grab card by offsetting first by i
+# if count is 0 return false
+# decrement count, if card count is 0, pop, and check if its the smallest if not return false
+# return true if the min_heap reaches 0
+class Solution:
+    def isNStraightHand(self, hand: List[int], groupSize: int) -> bool:
+        if len(hand) % groupSize != 0:
+            return False
+        
+        count = Counter(hand)
+        min_heap = list(count.keys())
+        heapq.heapify(min_heap)
+
+        while min_heap:
+            first = min_heap[0]
+
+            for i in range(groupSize):
+                card = first + i
+                if count[card] == 0:
+                    return False
+
+                count[card] -= 1
+                if count[card] == 0:
+                    if card != heapq.heappop(min_heap):
+                        return False
+        
+        return True
+```
+
+### Key Concepts:
+- We use a Hashmap to track the number of each card we have left
+- We use a min heap to track the minimum card available
+- While heap, we want to build a group
+- We grab the card at the top of the heap, and we try to build a group with it. 
+- Each card we decrement the counter, and then we check if its reached 0
+- If the card count has reached 0, we check if it was the smallest card in the heap
+- If not, that means we created a "hole" and can't create a valid group
+
+### Time and Space:
+- Time: O(n log n), where n is the number of unique cards
+    - Sorting takes O(n log n)
+    - Processing each card takes O(groupSize) which is constant
+- Space: O(n) for the counter dictionary
