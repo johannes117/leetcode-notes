@@ -275,3 +275,48 @@ class Solution:
 ### Time and Space Complexity
 - Time: O(n)
 - Space: O(1)
+
+## Partition Labels
+You are given a string s consisting of lowercase english letters.
+
+We want to split the string into as many substrings as possible, while ensuring that each letter appears in at most one substring.
+
+Return a list of integers representing the size of these substrings in the order they appear in the string.
+
+```python
+# Return a list of valid partition sizes. 
+# Greedy Approach: Build a lastIndex map, iterate thru s, 
+# if we find a char with a lastIndex greater than end, shift end
+# if we reach the end pointer, append size to our result list, reset size. 
+class Solution:
+    def partitionLabels(self, s: str) -> List[int]:
+        lastIndex = {}
+
+        for i, char in enumerate(s):
+            lastIndex[char] = i
+        
+        size, end = 0, 0
+        result = []
+
+        for i, char in enumerate(s):
+            size += 1
+            end = max(end, lastIndex[char])
+
+            if i == end:
+                result.append(size)
+                size = 0
+        
+        return result
+```
+
+### Key Concepts:
+- Each character may only appear in 1 partition
+- If we build a dictionary, where we store the last index of each character
+- Then we can iterate through the string, and get the last index for every character in the current partition
+- If we find a character with a last index greater than our current last index, we shift the end pointer
+- Once we reach the end pointer, we have found a valid partition. 
+- We append it to our result array
+
+### Time and Space:
+- Time: O(n), we take O(n) creating the hash map, and O(n) to find the partitions, which is O(n+n) which is the same as O(n)
+- Space: O(26) which is O(1) constant space. 
