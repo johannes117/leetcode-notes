@@ -102,3 +102,44 @@ class Solution:
 ### Time and Space
 - Time: O(n log n), due to sorting, and then iterating through the array once
 - Space: O(n), the merged list. 
+
+## Non-overlapping Intervals
+Given an array of intervals intervals where intervals[i] = [start_i, end_i], return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.
+
+Note: Intervals are non-overlapping even if they have a common point. For example, [1, 3] and [2, 4] are overlapping, but [1, 2] and [2, 3] are non-overlapping.
+
+```python
+# Return minimum number to remove to make non-overlapping
+# Sort intervals by end time
+# init removed, last_end variables
+# iterate through remaining intervals, unpack start and end of each interval
+# Check if current interval overlaps with the last kept interval, increment removed
+# else: move the last_end pointer to end. 
+# return removed. 
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        
+        intervals.sort(key=lambda x: x[1]) # Sort by end
+        removed = 0
+        last_end = intervals[0][1]
+
+        for i in range(1, len(intervals)):
+            start, end = intervals[i]
+
+            if start < last_end:
+                removed += 1
+            else: 
+                last_end = end
+        
+        return removed
+```
+
+### Key Concepts:
+- Sorting by end allow us to handle the edge cases, and allows us to "remove" the correct interval in a greedy way
+- Keep track of a last end pointer, and a removed counter
+- Loop through remaining intervals, and if the start of current is less than last end, we have an overlap so increment the removed counter
+- Else: no overlap, move the last_end pointer to the current end. 
+
+### Time and Space:
+- Time: O(n log n), due to sorting
+- Space: O(1)
