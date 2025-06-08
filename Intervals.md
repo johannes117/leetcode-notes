@@ -47,3 +47,58 @@ class Solution:
 ### Time and Space:
 - Time: O(n)
 - Space: O(n)
+
+## Merge Intervals
+Given an array of intervals where intervals[i] = [start_i, end_i], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+
+You may return the answer in any order.
+
+Note: Intervals are non-overlapping if they have no common point. For example, [1, 2] and [3, 4] are non-overlapping, but [1, 2] and [2, 3] are overlapping.
+
+```python
+# Return an array of intervals after merging overlapping intervals
+# Edgecase: if len less than or equal to 1 just return intervals
+# Sort intervals using lambda function
+# insert the first interval into the merged list
+# loop through intervals starting from the second position. 
+# if the first value in the current interval is less than or equal to the last element of the last interval in the merged list, 
+# update the end time in the merged array to the max of the two intervals 
+# else: append the current interval to the merged list
+# return merged
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        if len(intervals) <= 1:
+            return intervals
+
+        intervals.sort(key=lambda x: x[0]) # Sort by first element in interval
+        merged = [intervals[0]]
+
+        for current in intervals[1:]:
+            # Check if overlapping
+            if current[0] <= merged[-1][1]:
+                merged[-1][1] = max(current[1], merged[-1][1])
+            else:
+                merged.append(current)
+        
+        return merged
+```
+
+### Key Concepts:
+- We need to sort the intervals list so that its easier to work with.
+- Lambda function basics: 
+    - Syntax: lambda defines a nameless function, and then 'x' is the input parameter of the function (you can use any variable name for the input parameter)
+    - lambda x: x[0] is the same as:
+    ```python
+    def get_last(x):
+        return x[0]
+    ```
+    - So when we want to sort intervals based on a specific position we can use intervals.sort(key=lambda x: x[0])
+- We insert the first interval into the output list to get us started. 
+- We then loop through the remaining intervals
+- Check if overlapping: if the current first value, is less than or equal to the last value in the last interval, we want to merge them
+- Merging: simply set the last value of the last value in the merged list to the max of the two intervals last positions. 
+- If not overlapping, simply insert the new interval into the merged list. 
+
+### Time and Space
+- Time: O(n log n), due to sorting, and then iterating through the array once
+- Space: O(n), the merged list. 
