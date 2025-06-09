@@ -143,3 +143,96 @@ class Solution:
 ### Time and Space:
 - Time: O(n log n), due to sorting
 - Space: O(1)
+
+
+## Meeting Rooms
+Given an array of meeting time interval objects consisting of start and end times [[start_1,end_1],[start_2,end_2],...] (start_i < end_i), determine if a person could add all meetings to their schedule without any conflicts.
+
+```python
+"""
+Definition of Interval:
+class Interval(object):
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+"""
+# Return True if a person can attend all meetingss in the schedule
+# Edgecase, if not intervals
+# sort the intervals by start time
+# loop starting from the second position
+# check if current start is less than previouss end, if so return false
+# return True if we make it out of the loop
+
+class Solution:
+    def canAttendMeetings(self, intervals: List[Interval]) -> bool:
+        if not intervals:
+            return True
+        
+        intervals.sort(key=lambda x: x.start)
+
+        for i in range(len(intervals) - 1):
+            if intervals[i+1].start < intervals[i].end:
+                return False
+        
+        return True
+```
+
+### Key Concepts:
+- Sort the intervals by start time
+- Check adjacent intervals, if interval + 1 start is less than interval end then return False
+
+### Time and Space:
+- Time: O(n log n)
+- Space: O(1)
+
+## Meeting Rooms II
+Given an array of meeting time interval objects consisting of start and end times [[start_1,end_1],[start_2,end_2],...] (start_i < end_i), find the minimum number of days required to schedule all meetings without any conflicts.
+
+```python
+"""
+Definition of Interval:
+class Interval(object):
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+"""
+# Return the number of meeting rooms needed
+# initialise two sorte arrays of starting and ending times for the intervals
+# init res and count variables, and a s and e pointer for each array
+# while s is less than len intervals
+# if the start at s is less than end at e, increment the s pointer, and increment the count
+# else, a meeting has ended, shift the e pointer and decrement the count
+# set res to the max of count and res
+# return res
+
+class Solution:
+    def minMeetingRooms(self, intervals: List[Interval]) -> int:
+        start = sorted([i.start for i in intervals])
+        end = sorted([i.end for i in intervals])
+        max_count, count = 0, 0
+
+        i, j = 0, 0
+
+        while i < len(intervals):
+            if start[i] < end[j]:
+                i += 1
+                count += 1
+            else:
+                j += 1
+                count -= 1
+            max_count = max(max_count, count)
+        
+        return max_count
+```
+
+### Key Concepts:
+- This can also be solved using a MinHeap
+- This solution uses two sorted arrays of start and end times. 
+- we loop until we run out of start times
+- we check if the current start value is less than the current end value, if so we "start" a meeting and increment the count
+- else, if the end value is less than the  current start value, we "end" a meeting and decrement the count and shift the end pointer
+- every iteration we update our max_count
+
+### Time and Space:
+- Time: O(n log n)
+- Space: O(n)
