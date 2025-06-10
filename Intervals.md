@@ -236,3 +236,63 @@ class Solution:
 ### Time and Space:
 - Time: O(n log n)
 - Space: O(n)
+
+
+## Minimum Interval to Include Each Query
+You are given a 2D integer array intervals, where intervals[i] = [left_i, right_i] represents the ith interval starting at left_i and ending at right_i (inclusive).
+
+You are also given an integer array of query points queries. The result of query[j] is the length of the shortest interval i such that left_i <= queries[j] <= right_i. If no such interval exists, the result of this query is -1.
+
+Return an array output where output[j] is the result of query[j].
+
+Note: The length of an interval is calculated as right_i - left_i + 1.
+
+```python
+# Return an array of minimum interval sizes that fit each query
+# Sort intervals
+# Create query list with original indices: [(q, i) for i, q in enumerate(queries)]
+# sort indexed queries
+# initialise a result array of zeros of len queries
+# init min_heap and interval_idx
+# loop through indexed queries, unpack query_val and original_idx
+# while interval_idf less than len of intervals, and start value of the current interval is lessthan or equal to query_val
+# unpack the interval, calculate the size, push it to the heap (size, end) and increment the interval
+# Remove intervals that end before current query, while min_heap and the last value at the top of the heap is smaller than query_val, pop
+# get the minimum interval size for the current query, if min_heap store size at the top of the heap at the original index in the result array
+# else store -1
+class Solution:
+    def minInterval(self, intervals: List[List[int]], queries: List[int]) -> List[int]:
+        intervals.sort()
+
+        indexed_queries = [(q, i) for i, q in enumerate(queries)]
+        indexed_queries.sort()
+
+        result = [0] * len(queries)
+        min_heap = []
+        interval_idx = 0
+
+        for query_val, original_idx in indexed_queries:
+            while interval_idx < len(intervals) and intervals[interval_idx][0] <= query_val:
+                start, end = intervals[interval_idx]
+                size = end - start + 1
+                heapq.heappush(min_heap, (size, end))
+                interval_idx += 1
+            
+            while min_heap and min_heap[0][1] < query_val:
+                heapq.heappop(min_heap)
+
+            if min_heap:
+                result[original_idx] = min_heap[0][0]
+            else:
+                result[original_idx] = -1
+        
+        return result
+```
+
+### Key Concepts:
+- Can be bruteforced with an O(n^2) solution but just simply using a nested for loop to go through each query, and find the smallest interval in the list is. 
+- Optimised solution involves sorting both queries and intervals, maintaining an original index for the queries, and using a min_heap to determine the smallest interval for the current query.
+
+### Time and Space:
+- Time: O(n log n * q log q)
+- Space: O(m + n)
