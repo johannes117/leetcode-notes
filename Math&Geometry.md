@@ -94,3 +94,50 @@ class Solution:
 ### Time and Space:
 - Time: O(m*n)
 - Space: O(m*n)
+
+## Set Matrix Zeroes
+Given an m x n matrix of integers matrix, if an element is 0, set its entire row and column to 0's.
+
+You must update the matrix in-place.
+
+Follow up: Could you solve it using O(1) space?
+
+```python
+# if an element is 0, set its entire row and column to 0's
+# Traverse through the matrix twice, once to set the target positions with a *, and once to update the *'s with 0s
+# loop through matrix, if position is 0, call helper function in all 4 directions
+# loop through matrix, if position is *, set to 0
+# helper: if in bounds, and position != 0, set to *
+# call helper in the same direction. 
+class Solution:
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        
+        def helper(m, n, direction):
+            if 0 <= m < len(matrix) and 0 <= n < len(matrix[0]) and matrix[m][n] != 0:
+                matrix[m][n] = "*"
+                if direction == "U":
+                    helper(m-1, n, "U")
+                elif direction == "D":
+                    helper(m+1, n, "D")
+                elif direction == "L":
+                    helper(m, n-1, "L")
+                else:
+                    helper(m, n+1, "R")
+        
+        for m in range(len(matrix)):
+            for n in range(len(matrix[0])):
+                if matrix[m][n] == 0:
+                    helper(m-1, n, "U")
+                    helper(m+1, n, "D")
+                    helper(m, n-1, "L")
+                    helper(m, n+1, "R")
+        
+        for m in range(len(matrix)):
+            for n in range(len(matrix[0])):
+                if matrix[m][n] == "*":
+                    matrix[m][n] = 0
+```
+
+### Time and Space:
+- Time: O(m*n)
+- Space: O(max(m, n))
