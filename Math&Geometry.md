@@ -141,3 +141,54 @@ class Solution:
 ### Time and Space:
 - Time: O(m*n)
 - Space: O(max(m, n))
+
+## Happy Number
+A non-cyclical number is an integer defined by the following algorithm:
+
+Given a positive integer, replace it with the sum of the squares of its digits.
+Repeat the above step until the number equals 1, or it loops infinitely in a cycle which does not include 1.
+If it stops at 1, then the number is a non-cyclical number.
+Given a positive integer n, return true if it is a non-cyclical number, otherwise return false.
+
+```python
+# Return true if the number n is "happy", which means it will eventually reach 1, If we detect a cycle it is not happy
+# Helper function to get the sum of squares:
+#   - total variable, loop while input num is greater than 0
+#   - digit = num % 10 (number modulo 10) (Gives us the right most digit)
+#   - increment total by the digit * digit (squared)
+#   - num //= 10 (divide num by 10, drop the rightmost digit)
+#   - return total
+# Initialise a seen set, 
+# loop while n != 1, and not in seen
+# add n to seen, and call helper on n
+# return whether n == 1
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        
+        def helper(num):
+            total = 0
+            while num > 0:
+                digit = num % 10 # Get rightmost digit
+                total += digit * digit # add digit squared to sum
+                num //= 10 # drop rightmost digit
+            return total
+
+        seen = set()
+
+        while n != 1 and n not in seen:
+            seen.add(n)
+            n = helper(n)
+        
+        return n == 1
+```
+
+### Key Concepts:
+- essentially this is a cycle detection problem. Thats why we can solve it using a hashmap seen set, and store each computed sum of squares value. 
+- Each time we calculate a sum of squares, we add that number to the seen set and update n.
+- If n ever reaches 1, we know its a happy number
+- If we break the loop, and n does not equal 1, we have detected a loop, because it means we have calculated a value that has been seen before, thus detecting a cycle. 
+- Calculating the sum of squares: Get the rightmost digit using modulo 10, add the digits square to the total sum, and divide the current num by 10 (drop the rightmost digit)
+
+### Time and Space:
+- Time: O(log n), number of digits in worst case cycle
+- Space: O(log n), storing seen numbers
