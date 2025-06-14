@@ -192,3 +192,67 @@ class Solution:
 ### Time and Space:
 - Time: O(log n), number of digits in worst case cycle
 - Space: O(log n), storing seen numbers
+
+## Pow(x, n)
+Pow(x, n) is a mathematical function to calculate the value of x raised to the power of n (i.e., x^n).
+
+Given a floating-point value x and an integer value n, implement the myPow(x, n) function, which calculates x raised to the power n.
+
+You may not use any built-in library functions.
+
+```python
+# Compute x to the power n
+# initialise memo
+# helper function: base and exponent as parameters
+# basecases: if exponent is 0, return 1, if 1 return base
+# check memo
+# recursive case: 
+# if exponent is even, calculate halfpower using helper, base, expo // 2
+# result is halfpower * halfpower
+# else, odd component, result is base * helper, base, exp - 1
+# store result in memo
+# return result
+# handle negatives: if n < -, return 1 over helper x, -n
+# else return helper x, n
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        memo = {}
+
+        def helper(base, exp):
+            # Basecases:
+            if exp == 0:
+                return 1
+            if exp == 1:
+                return base
+            if exp in memo:
+                return memo[exp]
+            
+            if exp % 2 == 0:
+                half_power = helper(base, exp // 2)
+                result = half_power * half_power
+            else:
+                result = base * helper(base, exp - 1)
+            
+            memo[exp] = result
+            return memo[exp]
+        
+        if n < 0:
+            return 1 / helper(x, -n)
+        else:
+            return helper(x, n)
+```
+
+### Key Concepts:
+- We can solve this using recursion with memoization to improve the time complexity. 
+- basecases, if exponent is 0 return 1, if exponent is 1 return base. 
+- if exponent in memo return memo
+- Recursive: if exponent is even, just call helper on exponent // 2, then multiply the half powers together to get the result
+- Else if odd, we want to call the helper on exponent - 1, and then multiply the result by the base (which is essentially exponent == 1)
+- store in memo
+- return memo
+- Key insight for negatives, negative exponent is just positive exponent, but as the denominator. 
+- 2^-2 is 1/2^2
+
+### Time and Space
+- Time: O(log n)
+- Space: O(log n), call stack
